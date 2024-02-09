@@ -1,3 +1,16 @@
+# Mines Party
+
+## Repositories
+<div>
+	<p>
+		<a href="https://github.com/aryuuu/mines-party-server">
+			<img src="https://github-readme-stats.vercel.app/api/pin/?username=aryuuu&repo=mines-party-server&bg_color=0000&text_color=777&hide_border=true" alt="Backend">
+		</a>
+	</p>
+</div>
+
+----
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
