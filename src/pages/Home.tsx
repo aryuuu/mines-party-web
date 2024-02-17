@@ -1,11 +1,24 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers/root-reducer';
 
+import { ACTIONS as ROOM_ACTIONS } from '../redux/reducers/room-reducer';
+import { ACTIONS as PLAYER_ACTIONS } from '../redux/reducers/player-reducer';
+import { ACTIONS as SOCKET_ACTIONS } from '../redux/reducers/socket-reducer';
 
 const Home = () => {
-    const [username, setUsername] = useState('');
-    const [roomId, setRoomId] = useState('');
     const navigateTo = useNavigate();
+    const dispatch = useDispatch();
+
+    const {
+        username,
+        avatar_url: avatarUrl
+    } = useSelector((state: RootState) => state.playerReducer);
+    const {
+        id_room: roomId,
+    } = useSelector((state: RootState) => state.roomReducer);
+    const socket = useSelector((state: RootState) => state.socketReducer.socket);
 
     const onCreateRoom = () => {
         console.log('Create room', {
@@ -24,11 +37,17 @@ const Home = () => {
     };
 
     const onUpdateUsername = (value: string) => {
-        setUsername(value);
+        dispatch({
+            type: PLAYER_ACTIONS.SET_NAME,
+            payload: value
+        });
     };
 
     const onUpdateRoomId = (value: string) => {
-        setRoomId(value);
+        dispatch({
+            type: ROOM_ACTIONS.SET_ID,
+            payload: value
+        })
     };
 
     return (
