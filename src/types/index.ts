@@ -8,6 +8,8 @@ export type Room = {
   time: number;
   flag_count: number;
   mine_count: number;
+  current_row: number;
+  current_col: number;
 }
 
 export type Player = {

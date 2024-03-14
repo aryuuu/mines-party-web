@@ -152,29 +152,31 @@ const Home = () => {
 
   return (
     <>
-      <div className="text-bold">Mines Party</div>
-      <div className="container mx-auto block">
-        <input
-          className="block"
-          type="text"
-          placeholder="Your name"
-          value={username}
-          onChange={(e) => onUpdateUsername(e.target.value)}
-        />
-        <button className="block" onClick={onCreateRoom}>
-          Create room
-        </button>
-        <input
-          className="block"
-          type="text"
-          placeholder="Room ID"
-          value={roomId}
-          onChange={(e) => onUpdateRoomId(e.target.value)}
-        />
-        <button className="block" onClick={onJoinRoom}>
-          Join room
-        </button>
-      </div>
+      <div className=''>
+        <div className="text-bold">Mines Party</div>
+          <div className="container mx-auto block">
+            <input
+              className="block"
+              type="text"
+              placeholder="Your name"
+              value={username}
+              onChange={(e) => onUpdateUsername(e.target.value)}
+            />
+            <button className="block" onClick={onCreateRoom}>
+              Create room
+            </button>
+            <input
+              className="block"
+              type="text"
+              placeholder="Room ID"
+              value={roomId}
+              onChange={(e) => onUpdateRoomId(e.target.value)}
+            />
+            <button className="block" onClick={onJoinRoom}>
+              Join room
+            </button>
+          </div>
+    </div>
     </>
   );
 };
