@@ -16,6 +16,10 @@ export enum ACTIONS {
   PAUSE_GAME = 'PAUSE_GAME',
   END_GAME = 'END_GAME',
   SET_PLAYER_SCORE = 'SET_PLAYER_SCORE',
+  MOVE_DOWN = 'MOVE_DOWN',
+  MOVE_UP = 'MOVE_UP',
+  MOVE_LEFT = 'MOVE_LEFT',
+  MOVE_RIGHT = 'MOVE_RIGHT',
 }
 
 const initialState: Room = {
