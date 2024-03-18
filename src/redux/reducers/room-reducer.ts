@@ -116,6 +116,11 @@ const reducer = (state = initialState, action: ActionType) => {
         ...state,
         players: tempPlayers
       }
+    case ACTIONS.SET_FIELD:
+      return {
+        ...state,
+        field: payload
+      }
     default:
       return state;
   }

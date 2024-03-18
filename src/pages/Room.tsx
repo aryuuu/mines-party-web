@@ -10,6 +10,7 @@ import { ACTIONS as SOCKET_ACTIONS } from '../redux/reducers/socket-reducer';
 
 import Cell from '../components/Cell';
 import ChatCard from '../components/ChatCard';
+import { SocketEvents } from '../types';
 
 const Room = () => {
     // TODO: handle path param and redux store somehow
@@ -50,6 +51,12 @@ const Room = () => {
         'ArrowRight': ROOM_ACTIONS.MOVE_RIGHT,
     };
 
+    const onStartGame = () => {
+        socket.send(JSON.stringify({
+            event_type: SocketEvents.START_GAME
+        }));
+    }
+
     const onMoveCell = (direction) => {
         const type = keyToActionType[direction];
         dispatch({
@@ -59,9 +66,10 @@ const Room = () => {
 
     socket.onmessage = (ev) => {
         const data = JSON.parse(ev.data);
+        console.log({ data });
 
         switch (data.event_type) {
-            case "chat":
+            case SocketEvents.CHAT:
                 // playNotification();
                 setChats([...chats, data])
                 break;
@@ -115,10 +123,14 @@ const Room = () => {
                     payload: data.id_leaving_player
                 })
                 break;
-            case "start-game":
+            case SocketEvents.START_GAME:
                 if (data.success) {
                     dispatch({
                         type: ROOM_ACTIONS.SET_START
+                    });
+                    dispatch({
+                        type: ROOM_ACTIONS.SET_FIELD,
+                        payload: data.board
                     });
                 } else {
                     Swal.fire({
@@ -127,15 +139,17 @@ const Room = () => {
                     })
                 }
                 break;
+            case SocketEvents.BOARD_UPDATED:
+                dispatch({
+                    type: ROOM_ACTIONS.SET_FIELD,
+                    payload: data.board
+                });
+                break;
             case "start-game-broadcast":
-                playDealCard();
+                // playDealCard();
                 dispatch({
                     type: ROOM_ACTIONS.SET_START
                 });
-                dispatch({
-                    type: ROOM_ACTIONS.SET_TURN,
-                    payload: data.id_starter,
-                })
                 break;
             case "end-game-broadcast":
                 playNotification();
@@ -351,13 +365,13 @@ const Room = () => {
                     </div>
                 </div>
                 <div id='button-list' className='flex flex-row'>
-                    <div id='' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
+                    <div id='start-button' onClick={() => onStartGame()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Start
                     </div>
-                    <div id='' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
+                    <div id='pause-button' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Pause
                     </div>
-                    <div id='' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
+                    <div id='exit-button' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Exit
                     </div>
                 </div>
@@ -365,19 +379,25 @@ const Room = () => {
             <div id='game-panel' className='flex flex-row'>
                 <div id='field' className='flex flex-col'>
                     {
-                        Array.from(Array(fieldRow).keys()).map(row => {
+                        field && field.length > 0 ? field.map((row, rowIndex) => {
                             return (
-                                <div key={row} className='flex flex-row'>
+                                <div className='flex flex-row'>
                                     {
-                                        Array.from(Array(fieldCol).keys()).map(col => {
+                                        row.map((cell, colIndex) => {
                                             return (
-                                                <Cell key={`${row}-${col}`} id={col} row={row} col={col}/>
+                                                <Cell 
+                                                    key={`${rowIndex}-${colIndex}`} 
+                                                    id={rowIndex*colIndex} 
+                                                    row={rowIndex} 
+                                                    col={colIndex} 
+                                                    content={cell} 
+                                                />
                                             );
                                         })
                                     }
                                 </div>
                             );
-                        })
+                        }) : <div>loading...</div>
                     }
                 </div>
             </div>

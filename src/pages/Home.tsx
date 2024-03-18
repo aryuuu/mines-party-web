@@ -56,6 +56,7 @@ const Home = () => {
   socket.onmessage = (ev) => {
         console.log(ev);
         const data = JSON.parse(ev.data);
+        console.log({ data });
         switch (data.event_type) {
             case SocketEvents.CREATE_ROOM:
                 navigateTo(`/room/${roomId}`);
@@ -70,6 +71,10 @@ const Home = () => {
                 dispatch({
                     type: PLAYER_ACTIONS.SET_ADMIN,
                 });
+                // dispatch({
+                //     type: ROOM_ACTIONS.SET_FIELD,
+                //     payload: data.field
+                // });
                 break;
             case SocketEvents.JOIN_ROOM:
                 if (!data.success) {
