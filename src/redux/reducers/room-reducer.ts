@@ -96,10 +96,6 @@ const reducer = (state = initialState, action: ActionType) => {
       return {
         ...state,
         is_started: false,
-        count: 0,
-        is_clockwise: false,
-        // last_card: {} as Card,
-        id_player_in_turn: ''
       }
     case ACTIONS.SET_PLAYER_SCORE:
       console.log(payload);

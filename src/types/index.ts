@@ -50,6 +50,7 @@ export enum SocketEvents {
   OPEN_CELL = 'open_cell',
   FLAG_CELL = 'flag_cell',
   BOARD_UPDATED = 'board_updated',
+  MINE_OPENED = 'mine_opened',
   KICK_PLAYER = 'kick_player',
   VOTE_KICK_PLAYER = 'vote_kick_player',
   NOTIFICATION = 'notification',

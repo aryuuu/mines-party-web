@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Swal from 'sweetalert2';
+
 import { RootState } from '../redux/reducers/root-reducer';
 
 import { ACTIONS as ROOM_ACTIONS } from '../redux/reducers/room-reducer';
@@ -135,7 +137,8 @@ const Room = () => {
                 } else {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Failed to start game'
+                        title: 'Failed to start game',
+                        text: data.detail
                     })
                 }
                 break;
@@ -145,10 +148,14 @@ const Room = () => {
                     payload: data.board
                 });
                 break;
-            case "start-game-broadcast":
-                // playDealCard();
+            case SocketEvents.MINE_OPENED:
                 dispatch({
-                    type: ROOM_ACTIONS.SET_START
+                    type: ROOM_ACTIONS.END_GAME,
+                });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'You lose!',
+                    text: 'You opened a mine'
                 });
                 break;
             case "end-game-broadcast":
@@ -157,22 +164,12 @@ const Room = () => {
                     type: ROOM_ACTIONS.END_GAME
                 });
                 dispatch({
-                    type: ROOM_ACTIONS.SET_LAST_CARD,
-                    payload: {} as Card,
-                })
-                dispatch({
                     type: ROOM_ACTIONS.SET_PLAYER_SCORE,
                     payload: {
                         id_player: data.id_winner,
                         score: data.winner_score
                     }
                 })
-                dispatch({
-                    type: PLAYER_ACTIONS.RESET_HAND
-                });
-                dispatch({
-                    type: PLAYER_ACTIONS.SET_DEAD
-                });
                 const winner = players.find(
                     (p: Player) => p.id_player === data.id_winner);
 
@@ -190,100 +187,8 @@ const Room = () => {
                     text: `${winnerName} win!`
                 })
                 break;
-            case "play-card":
-                if (data.is_update) {
-                    dispatch({
-                        type: PLAYER_ACTIONS.SET_HAND,
-                        payload: data.new_hand
-                    });
-                }
-                if (data.status === 1) {
-                    Swal.fire({
-                        icon: 'error',
-                        'title': 'Unplayable card',
-                        'text': data.message,
-                        showConfirmButton: false,
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        denyButtonText: 'Discard',
-                    }).then((result) => {
-                            if (result.isDenied) {
-                                socket.send(JSON.stringify({
-                                    event_type: "play-card",
-                                    hand_index: data.hand_index,
-                                    is_discard: true,
-                                }))
-                            } else if (result.isDismissed) {
-                                dispatch({
-                                    type: GAME_ACTIONS.SET_NOT_CHOOSING
-                                })
-                            }
-                        })
-                } else if (data.status === 2) {
-                    Swal.fire({
-                        icon: 'info',
-                        'title': 'Hand discarded',
-                    })
-                } else if (data.status === 3) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid move',
-                        text: data.message
-                    })
-                }
-                break;
-            case "play-card-broadcast":
-                dispatch({
-                    type: ROOM_ACTIONS.SET_COUNT,
-                    payload: data.count
-                });
-                dispatch({
-                    type: ROOM_ACTIONS.SET_TURN,
-                    payload: data.id_next_player
-                })
-                if (data.card.rank !== 0) {
-                    playPlayCard();
-                    dispatch({
-                        type: ROOM_ACTIONS.SET_LAST_CARD,
-                        payload: data.card
-                    });
-                } else {
-                    playDropCard();
-                }
-                if (data.is_clockwise !== isClockwise) {
-                    dispatch({
-                        type: ROOM_ACTIONS.SET_REVERSE
-                    })
-                }
-                break;
-            case "turn-broadcast":
-                break;
-            case "initial-hand":
-                dispatch({
-                    type: PLAYER_ACTIONS.SET_HAND,
-                    payload: data.new_hand,
-                });
-                break;
-            case "dead-player":
-                dispatch({
-                    type: ROOM_ACTIONS.KILL_PLAYER,
-                    payload: data.id_dead_player
-                });
-                const deadPlayer = players.find(
-                    (p: Player) => p.id_player === data.id_dead_player);
-
-                let deadName = data.id_dead_player;
-                if (deadPlayer !== undefined) {
-                    deadName = deadPlayer.name
-                }
-                const deadLog: Chat = {
-                    message: `${deadName} is kil`,
-                    sender: 'System'
-                }
-                setChats([...chats, deadLog]);
-                break;
-            case "notification-broadcast":
-                playNotification();
+            case SocketEvents.NOTIFICATION:
+                // playNotification();
                 Swal.fire({
                     icon: 'info',
                     text: data.message
@@ -295,7 +200,7 @@ const Room = () => {
 
                 setChats([...chats, notifLog]);
                 break;
-            case "change-host":
+            case SocketEvents.HOST_CHANGED:
                 playNotification();
                 if (data.id_new_host === playerId) {
                     dispatch({
