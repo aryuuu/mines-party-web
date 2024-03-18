@@ -66,6 +66,18 @@ const Room = () => {
         });
     }
 
+    const onKeyPress = e => {
+        console.log({key: e.key});
+        const actionType = keyToActionType[e.key];
+        if (actionType !== undefined) {
+            dispatch({
+                type: actionType
+            });
+        } else {
+            console.log('invalid key');
+        }
+    }
+
     socket.onmessage = (ev) => {
         const data = JSON.parse(ev.data);
         console.log({ data });
@@ -256,7 +268,7 @@ const Room = () => {
     }
 
     return (
-        <div id='room-root' className='flex flex-row m-0 '>
+        <div id='room-root' className='flex flex-row m-0' onKeyPress={onKeyPress}>
             <div id='control-panel' className='flex flex-col'>
                 <div id='game-stat' className='flex flex-row'>
                     <div id='timer' className='p-1 m-1'>
