@@ -22,16 +22,26 @@ const Cell = (props: CellProps) => {
 
     const isCurrent = currentRow === props.row && currentCol === props.col;
 
-    let cellColor = 'bg-gray-500';
+    let cellColor = 'bg-gray-300';
     switch (content) {
-        case '0':
-            cellColor = 'bg-gray-300'
+        case ' ':
+            cellColor = 'bg-gray-500'
             break;
         case 'F':
             cellColor = 'bg-cyan-500'
     }
 
-    const onOpenCell = () => {
+    let textColor = 'text-gray-400'
+    switch (content) {
+        case 'F':
+            textColor = 'text-gray-800'
+            break;
+        default: 
+            textColor = 'text-gray-900'
+    }
+
+    const onOpenCell = (e) => {
+        e.preventDefault();
         socket.send(JSON.stringify({
             event_type: SocketEvents.OPEN_CELL,
             row,
@@ -39,7 +49,8 @@ const Cell = (props: CellProps) => {
         }));
     }
 
-    const onDoubleClick = () => {
+    const onDoubleClick = (e) => {
+        e.preventDefault();
         socket.send(JSON.stringify({
             event_type: '',
             row, 
@@ -47,20 +58,22 @@ const Cell = (props: CellProps) => {
         }));
     }
 
-    const onFlagCell = () => {
+    const onFlagCell = (e) => {
+        e.preventDefault();
         socket.send(JSON.stringify({
             event_type: SocketEvents.FLAG_CELL,
             row,
             col
         }));
+        return false;
     }
 
     return (
         <div 
-            onClick={() => onOpenCell()}
-            onDoubleClick={() => onDoubleClick()}
-            onContextMenu={() => onFlagCell()}
-            className={`cell ${ isCurrent ? 'bg-gray-500' : 'bg-gray-600'} ${cellColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm hover:bg-gray-500`}
+            onClick={e => onOpenCell(e)}
+            onDoubleClick={e => onDoubleClick(e)}
+            onContextMenu={e => onFlagCell(e)}
+            className={`cell ${ isCurrent ? 'bg-gray-500' : 'bg-gray-600'} ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm hover:bg-gray-500`}
         >
             {content}
         </div>
