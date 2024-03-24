@@ -51,6 +51,10 @@ const Room = () => {
         'ArrowDown': ROOM_ACTIONS.MOVE_DOWN,
         'ArrowLeft': ROOM_ACTIONS.MOVE_LEFT,
         'ArrowRight': ROOM_ACTIONS.MOVE_RIGHT,
+        'i': ROOM_ACTIONS.MOVE_UP,
+        'k': ROOM_ACTIONS.MOVE_DOWN,
+        'j': ROOM_ACTIONS.MOVE_LEFT,
+        'l': ROOM_ACTIONS.MOVE_RIGHT,
     };
 
     const onStartGame = () => {
@@ -66,15 +70,28 @@ const Room = () => {
         });
     }
 
-    const onKeyPress = e => {
-        console.log({key: e.key});
+    const onKeyDown = e => {
+        if (e.shiftKey && e.key === ' ') {
+            socket.send(JSON.stringify({
+                event_type: SocketEvents.FLAG_CELL,
+                row: currentRow,
+                col: currentCol
+            }));
+            return
+        } else if (e.key === ' ') {
+            socket.send(JSON.stringify({
+                event_type: SocketEvents.OPEN_CELL,
+                row: currentRow,
+                col: currentCol
+            }));
+            return
+        }
+
         const actionType = keyToActionType[e.key];
         if (actionType !== undefined) {
             dispatch({
                 type: actionType
             });
-        } else {
-            console.log('invalid key');
         }
     }
 
@@ -164,10 +181,28 @@ const Room = () => {
                 dispatch({
                     type: ROOM_ACTIONS.END_GAME,
                 });
+                dispatch({
+                    type: ROOM_ACTIONS.SET_FIELD,
+                    payload: data.board
+                });
                 Swal.fire({
                     icon: 'error',
                     title: 'You lose!',
                     text: 'You opened a mine'
+                });
+                break;
+            case SocketEvents.GAME_CLEARED:
+                dispatch({
+                    type: ROOM_ACTIONS.END_GAME,
+                });
+                dispatch({
+                    type: ROOM_ACTIONS.SET_FIELD,
+                    payload: data.board
+                });
+                Swal.fire({
+                    icon: 'info',
+                    title: 'You win!',
+                    text: 'Game cleared'
                 });
                 break;
             case "end-game-broadcast":
@@ -268,7 +303,7 @@ const Room = () => {
     }
 
     return (
-        <div id='room-root' className='flex flex-row m-0' onKeyPress={onKeyPress}>
+        <div id='room-root' className='flex flex-row m-0' onKeyDown={onKeyDown} tabIndex={-1}>
             <div id='control-panel' className='flex flex-col'>
                 <div id='game-stat' className='flex flex-row'>
                     <div id='timer' className='p-1 m-1'>

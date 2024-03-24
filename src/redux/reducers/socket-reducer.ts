@@ -24,10 +24,7 @@ const reducer = (state = initialState, action: ActionType) => {
 
   switch (type) {
     case ACTIONS.INIT_SOCKET:
-      console.log('init socket');
       state.socket = new WebSocket(`${MINES_PARTY_SOCKET_SERVER_URL}/game/${payload}`);
-      console.log({ payload });
-      console.log({ socket: state.socket });
       return state;
     case ACTIONS.REMOVE_SOCKET:
       return {

@@ -29,7 +29,13 @@ const Cell = (props: CellProps) => {
             break;
         case 'F':
             cellColor = 'bg-cyan-500'
+            break;
+        case 'X':
+            cellColor = 'bg-red-500'
+            break;
     }
+
+    if (isCurrent) cellColor = 'bg-yellow-100';
 
     let textColor = 'text-gray-400'
     switch (content) {
@@ -73,7 +79,7 @@ const Cell = (props: CellProps) => {
             onClick={e => onOpenCell(e)}
             onDoubleClick={e => onDoubleClick(e)}
             onContextMenu={e => onFlagCell(e)}
-            className={`cell ${ isCurrent ? 'bg-gray-500' : 'bg-gray-600'} ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm hover:bg-gray-500`}
+            className={`cell ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm hover:bg-gray-500`}
         >
             {content}
         </div>
