@@ -1,5 +1,5 @@
 import { ActionType } from "../types";
-import { Player, Room } from "../../types";
+import { Player, Room, } from "../../types";
 
 export enum ACTIONS {
   SET_ROOM = "SET_ROOM",
@@ -36,7 +36,7 @@ const initialState: Room = {
   current_row: 0,
 };
 
-const reducer = (state = initialState, action: ActionType) => {
+const reducer = (state: Room = initialState, action: ActionType) => {
   const { type, payload } = action;
 
   switch (type) {

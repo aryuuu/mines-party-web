@@ -46,7 +46,7 @@ const Cell = (props: CellProps) => {
             textColor = 'text-gray-900'
     }
 
-    const onOpenCell = (e) => {
+    const onOpenCell = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         socket.send(JSON.stringify({
             event_type: SocketEvents.OPEN_CELL,
@@ -55,7 +55,7 @@ const Cell = (props: CellProps) => {
         }));
     }
 
-    const onDoubleClick = (e) => {
+    const onDoubleClick = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         socket.send(JSON.stringify({
             event_type: '',
@@ -64,7 +64,7 @@ const Cell = (props: CellProps) => {
         }));
     }
 
-    const onFlagCell = (e) => {
+    const onFlagCell = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         socket.send(JSON.stringify({
             event_type: SocketEvents.FLAG_CELL,
