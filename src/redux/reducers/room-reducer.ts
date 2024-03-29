@@ -126,7 +126,7 @@ const reducer = (state = initialState, action: ActionType) => {
         current_row:
           state.current_row + 1 < state.field.length
             ? state.current_row + 1
-            : state.current_row,
+            : 0
       };
     case ACTIONS.MOVE_UP:
       return {
@@ -134,7 +134,7 @@ const reducer = (state = initialState, action: ActionType) => {
         current_row:
           state.current_row - 1 >= 0
             ? state.current_row - 1
-            : state.current_row,
+            : state.field.length - 1,
       };
     case ACTIONS.MOVE_LEFT:
       return {
@@ -142,7 +142,7 @@ const reducer = (state = initialState, action: ActionType) => {
         current_col:
           state.current_col - 1 >= 0
             ? state.current_col - 1
-            : state.current_col,
+            : state.field[0].length - 1,
       };
     case ACTIONS.MOVE_RIGHT:
       return {
@@ -150,7 +150,7 @@ const reducer = (state = initialState, action: ActionType) => {
         current_col:
           state.current_col + 1 < state.field[0].length
             ? state.current_col + 1
-            : state.current_col,
+            : 0,
       };
     default:
       return state;

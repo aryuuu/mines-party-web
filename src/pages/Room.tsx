@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2';
@@ -16,6 +16,8 @@ import { SocketEvents } from '../types';
 
 const Room = () => {
     // TODO: handle path param and redux store somehow
+    //
+    const navigateTo = useNavigate();
     const { roomId } = useParams();
     const {
         username,
@@ -61,6 +63,14 @@ const Room = () => {
         socket.send(JSON.stringify({
             event_type: SocketEvents.START_GAME
         }));
+    }
+
+    const onExitGame = () => {
+        socket.send(JSON.stringify({
+            event_type: SocketEvents.LEAVE_ROOM
+        }));
+
+        navigateTo('/');
     }
 
     const onMoveCell = (direction) => {
@@ -323,7 +333,7 @@ const Room = () => {
                     <div id='pause-button' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Pause
                     </div>
-                    <div id='exit-button' className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
+                    <div id='exit-button' onClick={() => onExitGame()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Exit
                     </div>
                 </div>
