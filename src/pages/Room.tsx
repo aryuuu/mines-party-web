@@ -12,6 +12,7 @@ import { ACTIONS as ROOM_ACTIONS } from '../redux/reducers/room-reducer';
 
 import Cell from '../components/Cell';
 import ChatCard from '../components/ChatCard';
+import Scoreboard from '../components/Scoreboard';
 import { SocketEvents, Chat, CellType, Player } from '../types';
 
 const Room = () => {
@@ -34,6 +35,9 @@ const Room = () => {
     const socket = useSelector((state: RootState) => state.socketReducer.socket);
     const [message, setMessage] = useState('');
     const [chats, setChats] = useState<Chat[]>([]);
+    const [playerScore, setPlayerScore] = useState<Player[]>([]);
+    const [showScoreboard, setShowScoreboard] = useState(false);
+    const [timer, setTimer] = useState(0);
 
     const dispatch = useDispatch();
 
@@ -57,6 +61,10 @@ const Room = () => {
         ['k', ROOM_ACTIONS.MOVE_DOWN],
         ['j', ROOM_ACTIONS.MOVE_LEFT],
         ['l', ROOM_ACTIONS.MOVE_RIGHT],
+        ['I', ROOM_ACTIONS.MOVE_UP],
+        ['K', ROOM_ACTIONS.MOVE_DOWN],
+        ['J', ROOM_ACTIONS.MOVE_LEFT],
+        ['L', ROOM_ACTIONS.MOVE_RIGHT],
     ]);
 
     const onStartGame = () => {
@@ -79,9 +87,14 @@ const Room = () => {
     const onShowScoreboard = () => {
         console.log({ players });
         const scoreboard = Object.values<Player>(players).map((player: Player) => {
-            return { name: player.name, score: player.score }
+            return { ...player }
         }).sort((a, b) => b.score - a.score);
-        console.log({ scoreboard });
+        setPlayerScore(scoreboard);
+        setShowScoreboard(true);
+    }
+
+    const onCloseScoreboard = () => {
+        setShowScoreboard(false);
     }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>)  => {
@@ -317,11 +330,11 @@ const Room = () => {
     }
 
     return (
-        <div id='room-root' className='flex flex-row m-0' onKeyDown={onKeyDown} tabIndex={-1}>
-            <div id='control-panel' className='flex flex-col'>
+        <div id='room-root' className='flex flex-row m-0 p-1 h-screen w-screen justify-between' onKeyDown={onKeyDown} tabIndex={-1}>
+            <div id='control-panel' className='flex flex-col p-10'>
                 <div id='game-stat' className='flex flex-row'>
                     <div id='timer' className='p-1 m-1'>
-                        timer
+                        time: {timer}
                     </div>
                     <div id='flag-count' className='p-1 m-1'>
                         flag-count
@@ -345,7 +358,7 @@ const Room = () => {
                     </div>
                 </div>
             </div>
-            <div id='game-panel' className='flex flex-row'>
+            <div id='game-panel' className='flex flex-row p-10'>
                 <div id='field' className='flex flex-col'>
                     {
                         field && field.length > 0 ? field.map((row: CellType[], rowIndex: number) => {
@@ -370,7 +383,7 @@ const Room = () => {
                     }
                 </div>
             </div>
-            <div id='chat-panel' className='flex flex-col'>
+            <div id='chat-panel' className='flex flex-col content-between p-10'>
                 {
                     chats.map((item, index) => <ChatCard key={index} chat={item.message} sender={item.sender} />)
                 }
@@ -381,6 +394,10 @@ const Room = () => {
                         }
                     }}/>
                 </div>
+            </div>
+            <div id='scoreboard-modal' className={`absolute bg-gray-900 ${showScoreboard ? 'block' : 'hidden'}`}>
+                <Scoreboard players={playerScore} />
+                <button onClick={() => onCloseScoreboard()}>Close</button>
             </div>
         </div>
     );

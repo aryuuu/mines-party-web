@@ -110,7 +110,7 @@ const Cell = (props: CellProps) => {
         e.preventDefault();
         onMouseOver();
       }}
-      className={`cell ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm`}
+      className={`cell ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm justify-center items-center place-items-center text-center`}
     >
       {content}
     </div>

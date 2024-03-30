@@ -54,47 +54,47 @@ const Home = () => {
   };
 
   socket.onmessage = (ev) => {
-        console.log(ev);
-        const data = JSON.parse(ev.data);
-        console.log({ data });
-        switch (data.event_type) {
-            case SocketEvents.CREATE_ROOM:
-                navigateTo(`/room/${roomId}`);
-                dispatch({
-                    type: PLAYER_ACTIONS.SET_ID,
-                    payload: data.game_room.id_host,
-                });
-                dispatch({
-                    type: ROOM_ACTIONS.SET_ROOM,
-                    payload: data.game_room,
-                });
-                dispatch({
-                    type: PLAYER_ACTIONS.SET_ADMIN,
-                });
-                break;
-            case SocketEvents.JOIN_ROOM:
-                if (data.detail !== "success") {
-                    const errorMessage = data.detail
-                        ? data.detail
-                        : "Failed to join room, please check the room ID";
-                    return Swal.fire({
-                        icon: "error",
-                        title: errorMessage,
-                    });
-                }
-                dispatch({
-                    type: PLAYER_ACTIONS.SET_ID,
-                    payload: data.id_player,
-                });
-                dispatch({
-                    type: ROOM_ACTIONS.SET_ROOM,
-                    payload: data.game_room,
-                });
-                navigateTo(`/room/${roomId}`);
-                break;
-            default:
-                break;
+    console.log(ev);
+    const data = JSON.parse(ev.data);
+    console.log({ data });
+    switch (data.event_type) {
+      case SocketEvents.CREATE_ROOM:
+        navigateTo(`/room/${roomId}`);
+        dispatch({
+          type: PLAYER_ACTIONS.SET_ID,
+          payload: data.game_room.id_host,
+        });
+        dispatch({
+          type: ROOM_ACTIONS.SET_ROOM,
+          payload: data.game_room,
+        });
+        dispatch({
+          type: PLAYER_ACTIONS.SET_ADMIN,
+        });
+        break;
+      case SocketEvents.JOIN_ROOM:
+        if (data.detail !== "success") {
+          const errorMessage = data.detail
+            ? data.detail
+            : "Failed to join room, please check the room ID";
+          return Swal.fire({
+            icon: "error",
+            title: errorMessage,
+          });
         }
+        dispatch({
+          type: PLAYER_ACTIONS.SET_ID,
+          payload: data.id_player,
+        });
+        dispatch({
+          type: ROOM_ACTIONS.SET_ROOM,
+          payload: data.game_room,
+        });
+        navigateTo(`/room/${roomId}`);
+        break;
+      default:
+        break;
+    }
   };
 
   const onCreateRoom = async () => {
@@ -103,9 +103,10 @@ const Home = () => {
       roomId,
     });
     setIsCreate(true);
-    // TODO: hit create room endpoint
     try {
-      const response = await axios.post(`${MINES_PARTY_SERVER_BASE_URL}/game/create`);
+      const response = await axios.post(
+        `${MINES_PARTY_SERVER_BASE_URL}/game/create`,
+      );
       dispatch({
         type: ROOM_ACTIONS.SET_ID,
         payload: response.data,
@@ -134,7 +135,7 @@ const Home = () => {
     dispatch({
       type: SOCKET_ACTIONS.INIT_SOCKET,
       payload: roomId,
-    })
+    });
     // TODO: hit join room endpoint
     // navigateTo(`/room/${roomId}`);
   };
@@ -155,31 +156,31 @@ const Home = () => {
 
   return (
     <>
-      <div className=''>
-        <div className="text-bold">Mines Party</div>
-          <div className="container mx-auto block">
-            <input
-              className="block"
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => onUpdateUsername(e.target.value)}
-            />
-            <button className="block" onClick={onCreateRoom}>
-              Create room
-            </button>
-            <input
-              className="block"
-              type="text"
-              placeholder="Room ID"
-              value={roomId}
-              onChange={(e) => onUpdateRoomId(e.target.value)}
-            />
-            <button className="block" onClick={onJoinRoom}>
-              Join room
-            </button>
-          </div>
-    </div>
+      <div className="flex flex-col place-items-center justify-center items-center h-screen">
+        <div className="text-bold mb-5">Mines Party</div>
+        <div className="container mx-auto flex flex-col place-items-center">
+          <input
+            className="block"
+            type="text"
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => onUpdateUsername(e.target.value)}
+          />
+          <button className="block" onClick={onCreateRoom}>
+            Create room
+          </button>
+          <input
+            className="block mt-5"
+            type="text"
+            placeholder="Room ID"
+            value={roomId}
+            onChange={(e) => onUpdateRoomId(e.target.value)}
+          />
+          <button className="block" onClick={onJoinRoom}>
+            Join room
+          </button>
+        </div>
+      </div>
     </>
   );
 };
