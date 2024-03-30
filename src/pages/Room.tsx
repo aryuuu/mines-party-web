@@ -116,15 +116,14 @@ const Room = () => {
                 // playNotification();
                 setChats([...chats, data])
                 break;
-            case SocketEvents.JOIN_ROOM:
-            // case "join-room-broadcast":
+            case SocketEvents.JOIN_ROOM_BROADCAST:
                 // playNotification();
                 const joinLog: Chat = {
-                    message: `${data.new_player.name} joined`,
+                    message: `${data.player.name} joined`,
                     sender: 'System'
                 }
                 setChats([...chats, joinLog])
-                // if (data.new_player.id_player !== playerId) {
+                // if (data.player.id_player !== playerId) {
                 //     dispatch({
                 //         type: ROOM_ACTIONS.ADD_PLAYER,
                 //         payload: data.new_player

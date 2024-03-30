@@ -71,13 +71,9 @@ const Home = () => {
                 dispatch({
                     type: PLAYER_ACTIONS.SET_ADMIN,
                 });
-                // dispatch({
-                //     type: ROOM_ACTIONS.SET_FIELD,
-                //     payload: data.field
-                // });
                 break;
             case SocketEvents.JOIN_ROOM:
-                if (!data.success) {
+                if (data.detail !== "success") {
                     const errorMessage = data.detail
                         ? data.detail
                         : "Failed to join room, please check the room ID";
@@ -86,15 +82,13 @@ const Home = () => {
                         title: errorMessage,
                     });
                 }
-                const newPlayer =
-                    data.new_room.players[data.new_room.players.length - 1];
                 dispatch({
                     type: PLAYER_ACTIONS.SET_ID,
-                    payload: newPlayer.id_player,
+                    payload: data.id_player,
                 });
                 dispatch({
                     type: ROOM_ACTIONS.SET_ROOM,
-                    payload: data.new_room,
+                    payload: data.game_room,
                 });
                 navigateTo(`/room/${roomId}`);
                 break;
@@ -137,6 +131,10 @@ const Home = () => {
       username,
       roomId,
     });
+    dispatch({
+      type: SOCKET_ACTIONS.INIT_SOCKET,
+      payload: roomId,
+    })
     // TODO: hit join room endpoint
     // navigateTo(`/room/${roomId}`);
   };
