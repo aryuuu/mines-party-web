@@ -16,7 +16,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const [isCreate, setIsCreate] = useState(false);
 
-  const { username, avatar_url: avatarUrl } = useSelector(
+  const { name, avatar_url: avatarUrl } = useSelector(
     (state: RootState) => state.playerReducer,
   );
   const { id_room: roomId } = useSelector(
@@ -30,7 +30,7 @@ const Home = () => {
         event_type: isCreate
           ? SocketEvents.CREATE_ROOM
           : SocketEvents.JOIN_ROOM,
-        client_name: username,
+        client_name: name,
         avatar_url: avatarUrl,
       }),
     );
@@ -99,7 +99,7 @@ const Home = () => {
 
   const onCreateRoom = async () => {
     console.log("Create room", {
-      username,
+      name,
       roomId,
     });
     setIsCreate(true);
@@ -128,7 +128,7 @@ const Home = () => {
   const onJoinRoom = () => {
     setIsCreate(false);
     console.log("Join room", {
-      username,
+      name,
       roomId,
     });
     dispatch({
@@ -162,7 +162,7 @@ const Home = () => {
               className="block"
               type="text"
               placeholder="Your name"
-              value={username}
+              value={name}
               onChange={(e) => onUpdateUsername(e.target.value)}
             />
             <button className="block" onClick={onCreateRoom}>

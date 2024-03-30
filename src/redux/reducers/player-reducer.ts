@@ -14,7 +14,7 @@ export enum ACTIONS {
 const initialState: Player = {
   id_player: '',
   avatar_url: '',
-  username: '',
+  name: '',
   is_admin: false,
   score: 0
 }
@@ -29,7 +29,7 @@ const reducer = (state = initialState, action: ActionType) => {
     case ACTIONS.SET_NAME:
       return {
         ...state,
-        username: payload
+        name: payload
       };
     case ACTIONS.SET_ID:
       return {
