@@ -62,11 +62,11 @@ const Home = () => {
                 navigateTo(`/room/${roomId}`);
                 dispatch({
                     type: PLAYER_ACTIONS.SET_ID,
-                    payload: data.room.id_host,
+                    payload: data.game_room.id_host,
                 });
                 dispatch({
                     type: ROOM_ACTIONS.SET_ROOM,
-                    payload: data.room,
+                    payload: data.game_room,
                 });
                 dispatch({
                     type: PLAYER_ACTIONS.SET_ADMIN,

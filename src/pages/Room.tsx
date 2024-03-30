@@ -12,7 +12,7 @@ import { ACTIONS as ROOM_ACTIONS } from '../redux/reducers/room-reducer';
 
 import Cell from '../components/Cell';
 import ChatCard from '../components/ChatCard';
-import { SocketEvents, Chat, CellType } from '../types';
+import { SocketEvents, Chat, CellType, Player } from '../types';
 
 const Room = () => {
     // TODO: handle path param and redux store somehow
@@ -29,6 +29,7 @@ const Room = () => {
         field,
         current_col: currentCol,
         current_row: currentRow,
+        players,
     } = useSelector((state: RootState) => state.roomReducer);
     const socket = useSelector((state: RootState) => state.socketReducer.socket);
     const [message, setMessage] = useState('');
@@ -75,12 +76,13 @@ const Room = () => {
         navigateTo('/');
     }
 
-    // const onMoveCell = (direction) => {
-    //     const type = keyToActionType[direction];
-    //     dispatch({
-    //         type
-    //     });
-    // }
+    const onShowScoreboard = () => {
+        console.log({ players });
+        const scoreboard = Object.values<Player>(players).map((player: Player) => {
+            return { name: player.name, score: player.score }
+        }).sort((a, b) => b.score - a.score);
+        console.log({ scoreboard });
+    }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>)  => {
         if (e.shiftKey && e.key === ' ') {
@@ -189,6 +191,10 @@ const Room = () => {
                     type: ROOM_ACTIONS.SET_FIELD,
                     payload: data.board
                 });
+                dispatch({
+                    type: ROOM_ACTIONS.SET_PLAYERS,
+                    payload: data.players,
+                });
                 Swal.fire({
                     icon: 'error',
                     title: 'You lose!',
@@ -203,6 +209,10 @@ const Room = () => {
                     type: ROOM_ACTIONS.SET_FIELD,
                     payload: data.board
                 });
+                dispatch({
+                    type: ROOM_ACTIONS.SET_PLAYERS,
+                    payload: data.players,
+                })
                 Swal.fire({
                     icon: 'info',
                     title: 'You win!',
@@ -329,6 +339,9 @@ const Room = () => {
                     </div>
                     <div id='exit-button' onClick={() => onExitGame()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Exit
+                    </div>
+                    <div id='scoreboard-button' onClick={() => onShowScoreboard()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
+                        Scoreboard
                     </div>
                 </div>
             </div>
