@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2';
@@ -13,18 +13,19 @@ import { ACTIONS as ROOM_ACTIONS } from '../redux/reducers/room-reducer';
 import Cell from '../components/Cell';
 import ChatCard from '../components/ChatCard';
 import Scoreboard from '../components/Scoreboard';
+import Timer from '../components/Timer';
 import { SocketEvents, Chat, CellType, Player } from '../types';
 
 const Room = () => {
     // TODO: handle path param and redux store somehow
     //
     const navigateTo = useNavigate();
-    const { roomId } = useParams();
-    console.log({ roomId });
-    // const {
-    //     username,
-    //     avatar_url: avatarUrl
-    // } = useSelector((state: RootState) => state.playerReducer);
+    // const { roomId } = useParams();
+    // console.log({ roomId });
+    const {
+        // name,
+        id_player: playerId,
+    } = useSelector((state: RootState) => state.playerReducer);
     const {
         // id_room: roomId,
         field,
@@ -40,6 +41,10 @@ const Room = () => {
     const [timer, setTimer] = useState(0);
 
     const dispatch = useDispatch();
+
+    let positionUpdater: number;
+    let timeUpdater: number;
+
 
     useEffect(() => {
         const chatBase = document.getElementById('chat-base');
@@ -127,6 +132,13 @@ const Room = () => {
             dispatch({
                 type: actionType
             });
+
+            // TODO: probably need some kind of debounce here
+            socket.send(JSON.stringify({
+                event_type: SocketEvents.POSITION_UPDATED,
+                row: currentRow,
+                col: currentCol
+            }));
         }
     }
 
@@ -190,6 +202,23 @@ const Room = () => {
                         type: ROOM_ACTIONS.SET_FIELD,
                         payload: data.board
                     });
+                    // positionUpdater = setInterval(() => {
+                    //     console.log('update pos cast')
+                    //     console.log({
+                    //         event_type: SocketEvents.POSITION_UPDATED,
+                    //         row: currentRow,
+                    //         col: currentCol
+                    //     })
+                    //     socket.send(JSON.stringify({
+                    //         event_type: SocketEvents.POSITION_UPDATED,
+                    //         row: currentRow,
+                    //         col: currentCol
+                    //     }));
+                    // }, 1000);
+                    // timeUpdater = setInterval(() => {
+                    //     console.log('timer', timer);
+                    //     setTimer(timer + 1);
+                    // }, 1000);
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -216,6 +245,8 @@ const Room = () => {
                     type: ROOM_ACTIONS.SET_PLAYERS,
                     payload: data.players,
                 });
+                // clearInterval(positionUpdater);
+                // clearInterval(timeUpdater)
                 Swal.fire({
                     icon: 'error',
                     title: 'You lose!',
@@ -239,6 +270,17 @@ const Room = () => {
                     title: 'You win!',
                     text: 'Game cleared'
                 });
+                // clearInterval(positionUpdater);
+                // clearInterval(timeUpdater)
+                break;
+            case SocketEvents.POSITION_UPDATED:
+                console.log({ position_update_data: data })
+                if (data.id_player !== playerId) {
+                    dispatch({
+                        type: ROOM_ACTIONS.SET_PLAYER_POSITION,
+                        payload: { player_id: data.sender_id, row: data.row, col: data.col }
+                    });
+                }
                 break;
             // case "end-game-broadcast":
             //     playNotification();
@@ -342,7 +384,7 @@ const Room = () => {
             <div id='control-panel' className='flex flex-col justify-center p-10'>
                 <div id='game-stat' className='flex flex-row'>
                     <div id='timer' className='p-1 m-1'>
-                        time: {timer}
+                        <Timer time={timer}/>
                     </div>
                     <div id='flag-count' className='p-1 m-1'>
                         flag-count

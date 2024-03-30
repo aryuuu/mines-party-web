@@ -4,6 +4,7 @@ export type Room = {
   id_host: string;
   is_started: boolean;
   players: Player[];
+  player_positions: { [key: string]: { row: number; col: number } };
   field: CellType[][];
   time: number;
   flag_count: number;
@@ -52,6 +53,7 @@ export enum SocketEvents {
   BOARD_UPDATED = 'board_updated',
   MINE_OPENED = 'mine_opened',
   GAME_CLEARED = 'game_cleared',
+  POSITION_UPDATED = 'position_updated',
   KICK_PLAYER = 'kick_player',
   VOTE_KICK_PLAYER = 'vote_kick_player',
   NOTIFICATION = 'notification',

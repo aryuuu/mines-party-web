@@ -3,7 +3,7 @@ import { Player, Room } from "../../types";
 
 export enum ACTIONS {
   SET_ROOM = "SET_ROOM",
-  SET_ID = "SET_ID",
+  SET_ROOM_ID = "SET_ROOM_ID",
   RESET_ROOM = "RESET_ROOM",
   SET_CAPACITY = "SET_CAPACITY",
   SET_HOST = "SET_HOST",
@@ -21,6 +21,7 @@ export enum ACTIONS {
   MOVE_LEFT = "MOVE_LEFT",
   MOVE_RIGHT = "MOVE_RIGHT",
   SET_CURRENT_POSITION = "SET_CURRENT_POSITION",
+  SET_PLAYER_POSITION = "SET_PLAYER_POSITION",
 }
 
 const initialState: Room = {
@@ -29,6 +30,7 @@ const initialState: Room = {
   id_host: "",
   is_started: false,
   players: [],
+  player_positions: {},
   field: [],
   time: 0,
   flag_count: 0,
@@ -49,7 +51,7 @@ const reducer = (state: Room = initialState, action: ActionType) => {
       state.players = payload.players;
 
       return state;
-    case ACTIONS.SET_ID:
+    case ACTIONS.SET_ROOM_ID:
       return {
         ...state,
         id_room: payload,
@@ -159,6 +161,20 @@ const reducer = (state: Room = initialState, action: ActionType) => {
         current_col: payload.col,
         current_row: payload.row,
       };
+    case ACTIONS.SET_PLAYER_POSITION:
+      console.log({ pos_state: state.player_positions })
+      return {
+        ...state,
+        player_positions: {
+          ...state.player_positions,
+          [payload.player_id]: {
+            row: payload.row,
+            col: payload.col,
+          }
+        }
+      };
+      // console.log({ state })
+      // return state;
     default:
       return state;
   }

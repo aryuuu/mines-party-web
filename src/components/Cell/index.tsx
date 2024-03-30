@@ -2,7 +2,7 @@ import "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/root-reducer";
 import { SocketEvents } from "../../types";
-import { ACTIONS as ROOM_ACTIONS } from '../../redux/reducers/room-reducer';
+import { ACTIONS as ROOM_ACTIONS } from "../../redux/reducers/room-reducer";
 
 type CellProps = {
   id: number;
@@ -16,12 +16,20 @@ type CellProps = {
 const Cell = (props: CellProps) => {
   const { col, row, content } = props;
   const dispatch = useDispatch();
-  const { current_row: currentRow, current_col: currentCol } = useSelector(
-    (state: RootState) => state.roomReducer,
-  );
+  const {
+    current_row: currentRow,
+    current_col: currentCol,
+    player_positions: playerPositions,
+  } = useSelector((state: RootState) => state.roomReducer);
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
 
   const isCurrent = currentRow === props.row && currentCol === props.col;
+  const isPlayer = Object.values(playerPositions).some(
+    (pos) => pos.row === row && pos.col === col,
+  );
+  // const isPlayer = playerPositions.some(
+  //   (pos) => pos.row === row && pos.col === col,
+  // );
 
   let cellColor = "bg-gray-300";
   let textColor = "text-gray-900";
@@ -60,6 +68,10 @@ const Cell = (props: CellProps) => {
     }
   }
 
+  if (isPlayer && !isCurrent) {
+    cellColor = "bg-green-500";
+  }
+
   const onOpenCell = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     socket.send(
@@ -95,11 +107,18 @@ const Cell = (props: CellProps) => {
   };
 
   const onMouseOver = () => {
-        dispatch({
-            type: ROOM_ACTIONS.SET_CURRENT_POSITION,
-            payload: { row, col },
-        });
-    };
+    dispatch({
+      type: ROOM_ACTIONS.SET_CURRENT_POSITION,
+      payload: { row, col },
+    });
+
+    // TODO: probably need some kind of debounce here
+    socket.send(JSON.stringify({
+        event_type: SocketEvents.POSITION_UPDATED,
+        row: currentRow,
+        col: currentCol
+    }));
+  };
 
   return (
     <div

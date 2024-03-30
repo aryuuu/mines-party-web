@@ -4,7 +4,7 @@ import { Player } from '../../types';
 export enum ACTIONS {
   RESET_PLAYER = 'RESET_PLAYER',
   SET_NAME = 'SET_NAME',
-  SET_ID = 'SET_ID',
+  SET_PLAYER_ID = 'SET_PLAYER_ID',
   SET_AVATAR = 'SET_AVATAR',
   RESET_AVATAR = 'RESET_AVATAR',
   SET_ADMIN = 'SET_ADMIN',
@@ -31,7 +31,7 @@ const reducer = (state = initialState, action: ActionType) => {
         ...state,
         name: payload
       };
-    case ACTIONS.SET_ID:
+    case ACTIONS.SET_PLAYER_ID:
       return {
         ...state,
         id_player: payload

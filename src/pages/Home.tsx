@@ -62,7 +62,7 @@ const Home = () => {
       case SocketEvents.CREATE_ROOM:
         navigateTo(`/room/${roomId}`);
         dispatch({
-          type: PLAYER_ACTIONS.SET_ID,
+          type: PLAYER_ACTIONS.SET_PLAYER_ID,
           payload: data.game_room.id_host,
         });
         dispatch({
@@ -84,7 +84,7 @@ const Home = () => {
           });
         }
         dispatch({
-          type: PLAYER_ACTIONS.SET_ID,
+          type: PLAYER_ACTIONS.SET_PLAYER_ID,
           payload: data.id_player,
         });
         dispatch({
@@ -110,7 +110,7 @@ const Home = () => {
       );
       console.log({ res: response.data })
       dispatch({
-        type: ROOM_ACTIONS.SET_ID,
+        type: ROOM_ACTIONS.SET_ROOM_ID,
         payload: response.data,
       });
       dispatch({
@@ -151,7 +151,7 @@ const Home = () => {
 
   const onUpdateRoomId = (value: string) => {
     dispatch({
-      type: ROOM_ACTIONS.SET_ID,
+      type: ROOM_ACTIONS.SET_ROOM_ID,
       payload: value,
     });
   };
