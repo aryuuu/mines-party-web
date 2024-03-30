@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,6 +40,14 @@ const Room = () => {
     const [timer, setTimer] = useState(0);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const chatBase = document.getElementById('chat-base');
+        if (chatBase) {
+            chatBase.scrollIntoView();
+        }
+    }, [chats]);
+
 
     const onSendChat = () => {
         const content = message.trim();
@@ -331,7 +339,7 @@ const Room = () => {
 
     return (
         <div id='room-root' className='flex flex-row m-0 p-1 h-screen w-screen justify-between' onKeyDown={onKeyDown} tabIndex={-1}>
-            <div id='control-panel' className='flex flex-col p-10'>
+            <div id='control-panel' className='flex flex-col justify-center p-10'>
                 <div id='game-stat' className='flex flex-row'>
                     <div id='timer' className='p-1 m-1'>
                         time: {timer}
@@ -358,12 +366,12 @@ const Room = () => {
                     </div>
                 </div>
             </div>
-            <div id='game-panel' className='flex flex-row p-10'>
+            <div id='game-panel' className='flex flex-row items-center p-10'>
                 <div id='field' className='flex flex-col'>
                     {
                         field && field.length > 0 ? field.map((row: CellType[], rowIndex: number) => {
                             return (
-                                <div className='flex flex-row'>
+                                <div className='flex flex-row' key={rowIndex}>
                                     {
                                         row.map((cell, colIndex) => {
                                             return (
@@ -383,10 +391,13 @@ const Room = () => {
                     }
                 </div>
             </div>
-            <div id='chat-panel' className='flex flex-col content-between p-10'>
-                {
-                    chats.map((item, index) => <ChatCard key={index} chat={item.message} sender={item.sender} />)
-                }
+            <div id='chat-panel' className='flex flex-col justify-between pt-20 pb-20 pr-5'>
+                <div id='chat-items' className='grid overflow-scroll'>
+                    {
+                        chats.map((item, index) => <ChatCard key={index} chat={item.message} sender={item.sender} />)
+                    }
+                    <div id="chat-base"></div>
+                </div>
                 <div id='chat-input' className='flex flex-row'>
                     <input type='text' value={message} onChange={e => setMessage(e.target.value)} onKeyPress={(e) => {
                         if (e.key == 'Enter') {

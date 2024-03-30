@@ -25,6 +25,7 @@ const Home = () => {
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
 
   socket.onopen = () => {
+    console.log("Socket connected");
     socket.send(
       JSON.stringify({
         event_type: isCreate
@@ -107,6 +108,7 @@ const Home = () => {
       const response = await axios.post(
         `${MINES_PARTY_SERVER_BASE_URL}/game/create`,
       );
+      console.log({ res: response.data })
       dispatch({
         type: ROOM_ACTIONS.SET_ID,
         payload: response.data,
