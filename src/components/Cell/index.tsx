@@ -1,7 +1,8 @@
 import "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/root-reducer";
 import { SocketEvents } from "../../types";
+import { ACTIONS as ROOM_ACTIONS } from '../../redux/reducers/room-reducer';
 
 type CellProps = {
   id: number;
@@ -14,6 +15,7 @@ type CellProps = {
 
 const Cell = (props: CellProps) => {
   const { col, row, content } = props;
+  const dispatch = useDispatch();
   const { current_row: currentRow, current_col: currentCol } = useSelector(
     (state: RootState) => state.roomReducer,
   );
@@ -58,40 +60,6 @@ const Cell = (props: CellProps) => {
     }
   }
 
-  // switch (content) {
-  //   case " ":
-  //     cellColor = "bg-gray-500";
-  //     break;
-  //   case "F":
-  //     cellColor = "bg-cyan-500";
-  //     break;
-  //   case "X":
-  //     cellColor = "bg-red-500";
-  //     break;
-  // }
-
-  // if (isCurrent) cellColor = "bg-yellow-100";
-
-  // let textColor = "text-gray-400";
-  // switch (content) {
-  //   case "F":
-  //     textColor = "text-gray-800";
-  //     break;
-  //   default:
-  //     textColor = "text-gray-900";
-  // }
-
-  // cell states
-  // closed, not selected
-  // closed, selected
-  // closed, flagged, not selected
-  // closed, flagged, selected
-  // open, 0, not selected
-  // open, non 0, not selected
-  // open, 0, selected
-  // open, non 0, selected
-  //
-
   const onOpenCell = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     socket.send(
@@ -126,11 +94,22 @@ const Cell = (props: CellProps) => {
     return false;
   };
 
+  const onMouseOver = () => {
+        dispatch({
+            type: ROOM_ACTIONS.SET_CURRENT_POSITION,
+            payload: { row, col },
+        });
+    };
+
   return (
     <div
       onClick={(e) => onOpenCell(e)}
       onDoubleClick={(e) => onDoubleClick(e)}
       onContextMenu={(e) => onFlagCell(e)}
+      onMouseOver={(e) => {
+        e.preventDefault();
+        onMouseOver();
+      }}
       className={`cell ${cellColor} ${textColor} lg:w-12 lg:h-12 md:w-8 md:h-8 m-1 rounded-sm`}
     >
       {content}

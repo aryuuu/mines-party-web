@@ -1,5 +1,5 @@
 import { ActionType } from "../types";
-import { Player, Room, } from "../../types";
+import { Player, Room } from "../../types";
 
 export enum ACTIONS {
   SET_ROOM = "SET_ROOM",
@@ -20,6 +20,7 @@ export enum ACTIONS {
   MOVE_UP = "MOVE_UP",
   MOVE_LEFT = "MOVE_LEFT",
   MOVE_RIGHT = "MOVE_RIGHT",
+  SET_CURRENT_POSITION = "SET_CURRENT_POSITION",
 }
 
 const initialState: Room = {
@@ -126,7 +127,7 @@ const reducer = (state: Room = initialState, action: ActionType) => {
         current_row:
           state.current_row + 1 < state.field.length
             ? state.current_row + 1
-            : 0
+            : 0,
       };
     case ACTIONS.MOVE_UP:
       return {
@@ -151,6 +152,12 @@ const reducer = (state: Room = initialState, action: ActionType) => {
           state.current_col + 1 < state.field[0].length
             ? state.current_col + 1
             : 0,
+      };
+    case ACTIONS.SET_CURRENT_POSITION:
+      return {
+        ...state,
+        current_col: payload.col,
+        current_row: payload.row,
       };
     default:
       return state;
