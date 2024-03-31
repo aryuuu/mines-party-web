@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Swal from "sweetalert2";
@@ -22,7 +22,7 @@ const Room = () => {
   // TODO: handle path param and redux store somehow
   //
   const navigateTo = useNavigate();
-  // const { roomId } = useParams();
+  const { roomId } = useParams();
   // console.log({ roomId });
   const {
     // name,
@@ -50,6 +50,18 @@ const Room = () => {
       chatBase.scrollIntoView();
     }
   }, [chats]);
+
+
+  useEffect(() => {
+    document.title = 'Room | Cepex';
+    if (socket.url == null) {
+      dispatch({
+        type: ROOM_ACTIONS.SET_ROOM_ID,
+        payload: roomId
+      });
+      navigateTo('/')
+    }
+  }, [dispatch, roomId, socket.url, navigateTo]);
 
   const onSendChat = () => {
     const content = message.trim();
