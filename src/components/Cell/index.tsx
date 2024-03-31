@@ -21,15 +21,16 @@ const Cell = (props: CellProps) => {
     current_col: currentCol,
     player_positions: playerPositions,
   } = useSelector((state: RootState) => state.roomReducer);
+  const {
+    id_player: playerId,
+  } = useSelector((state: RootState) => state.playerReducer);
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
 
   const isCurrent = currentRow === props.row && currentCol === props.col;
-  const isPlayer = Object.values(playerPositions).some(
-    (pos) => pos.row === row && pos.col === col,
+
+  const isOtherPlayer = Object.entries(playerPositions).some(
+    ([id, pos]) => id !== playerId && pos.row === row && pos.col === col,
   );
-  // const isPlayer = playerPositions.some(
-  //   (pos) => pos.row === row && pos.col === col,
-  // );
 
   let cellColor = "bg-gray-300";
   let textColor = "text-gray-900";
@@ -68,7 +69,7 @@ const Cell = (props: CellProps) => {
     }
   }
 
-  if (isPlayer && !isCurrent) {
+  if (isOtherPlayer && !isCurrent) {
     cellColor = "bg-green-500";
   }
 

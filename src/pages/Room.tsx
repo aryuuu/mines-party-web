@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { RootState } from '../redux/reducers/root-reducer';
 
@@ -38,13 +39,9 @@ const Room = () => {
     const [chats, setChats] = useState<Chat[]>([]);
     const [playerScore, setPlayerScore] = useState<Player[]>([]);
     const [showScoreboard, setShowScoreboard] = useState(false);
-    const [timer, setTimer] = useState(0);
+    const [timer, _setTimer] = useState(0);
 
     const dispatch = useDispatch();
-
-    let positionUpdater: number;
-    let timeUpdater: number;
-
 
     useEffect(() => {
         const chatBase = document.getElementById('chat-base');
@@ -165,7 +162,6 @@ const Room = () => {
                 //     });
                 // }
                 break;
-            // case "leave-room":
             case SocketEvents.LEAVE_ROOM:
                 socket.close(1000);
                 dispatch({
@@ -282,35 +278,6 @@ const Room = () => {
                     });
                 }
                 break;
-            // case "end-game-broadcast":
-            //     playNotification();
-            //     dispatch({
-            //         type: ROOM_ACTIONS.END_GAME
-            //     });
-            //     dispatch({
-            //         type: ROOM_ACTIONS.SET_PLAYER_SCORE,
-            //         payload: {
-            //             id_player: data.id_winner,
-            //             score: data.winner_score
-            //         }
-            //     })
-            //     const winner = players.find(
-            //         (p: Player) => p.id_player === data.id_winner);
-
-            //     let winnerName = data.id_winner;
-            //     if (winner !== undefined) {
-            //         winnerName = winner.name
-            //     }
-            //     const endLog: Chat = {
-            //         sender: 'System',
-            //         message: `${winnerName} win!`
-            //     }
-            //     setChats([...chats, endLog]);
-            //     Swal.fire({
-            //         icon: 'info',
-            //         text: `${winnerName} win!`
-            //     })
-            //     break;
             case SocketEvents.NOTIFICATION:
                 // playNotification();
                 Swal.fire({
@@ -403,6 +370,16 @@ const Room = () => {
                     <div id='exit-button' onClick={() => onExitGame()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Exit
                     </div>
+                    <CopyToClipboard
+                      text={window.location.href}
+                      onCopy={() => Swal.fire({
+                        icon: 'success',
+                        title: 'Link copied',
+                        text: window.location.href
+                      })}
+                    >
+                        <div className='cell bg-gray-800 p-2 m-1 rounded hover:bg-gray-500'>Copy link</div>
+                    </CopyToClipboard>
                     <div id='scoreboard-button' onClick={() => onShowScoreboard()} className='cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500'>
                         Scoreboard
                     </div>
@@ -433,7 +410,7 @@ const Room = () => {
                     }
                 </div>
             </div>
-            <div id='chat-panel' className='flex flex-col justify-between pt-20 pb-20 pr-5'>
+            <div id='chat-panel' className='flex flex-col justify-end pt-20 pb-20 pr-5'>
                 <div id='chat-items' className='grid overflow-scroll'>
                     {
                         chats.map((item, index) => <ChatCard key={index} chat={item.message} sender={item.sender} />)
