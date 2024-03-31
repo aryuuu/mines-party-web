@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/reducers/root-reducer";
 import { SocketEvents } from "../../types";
 import { ACTIONS as ROOM_ACTIONS } from "../../redux/reducers/room-reducer";
+import { flagCellSfx, moveCellSfx, openCellSfx } from "../../sfx";
 
 type CellProps = {
   id: number;
@@ -82,6 +83,7 @@ const Cell = (props: CellProps) => {
         col,
       }),
     );
+    openCellSfx.play();
   };
 
   const onDoubleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -104,6 +106,7 @@ const Cell = (props: CellProps) => {
         col,
       }),
     );
+    flagCellSfx.play();
     return false;
   };
 
@@ -112,6 +115,7 @@ const Cell = (props: CellProps) => {
       type: ROOM_ACTIONS.SET_CURRENT_POSITION,
       payload: { row, col },
     });
+    moveCellSfx.play();
 
     // TODO: probably need some kind of debounce here
     socket.send(JSON.stringify({
