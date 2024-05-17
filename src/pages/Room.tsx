@@ -8,8 +8,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { RootState } from "../redux/reducers/root-reducer";
 
 import { ACTIONS as ROOM_ACTIONS } from "../redux/reducers/room-reducer";
-// import { ACTIONS as PLAYER_ACTIONS } from '../redux/reducers/player-reducer';
-// import { ACTIONS as SOCKET_ACTIONS } from '../redux/reducers/socket-reducer';
 
 import Cell from "../components/Cell";
 import ChatCard from "../components/ChatCard";
@@ -23,7 +21,6 @@ const Room = () => {
   //
   const navigateTo = useNavigate();
   const { roomId } = useParams();
-  // console.log({ roomId });
   const {
     // name,
     id_player: playerId,
