@@ -8,6 +8,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { RootState } from "../redux/reducers/root-reducer";
 
 import { ACTIONS as ROOM_ACTIONS } from "../redux/reducers/room-reducer";
+import { ACTIONS as SOCKET_ACTIONS } from "../redux/reducers/socket-reducer";
 
 import Cell from "../components/Cell";
 import ChatCard from "../components/ChatCard";
@@ -105,7 +106,9 @@ const Room = () => {
     dispatch({
       type: ROOM_ACTIONS.RESET_ROOM,
     });
-
+    dispatch({
+      type: SOCKET_ACTIONS.REMOVE_SOCKET
+    });
     navigateTo("/");
   };
 
@@ -164,6 +167,22 @@ const Room = () => {
       );
     }
   };
+
+  socket.onclose = () => {
+    dispatch({
+      type: ROOM_ACTIONS.RESET_ROOM
+    });
+    dispatch({
+      type: SOCKET_ACTIONS.REMOVE_SOCKET
+    });
+    // dispatch({
+    //   type: PLAYER_ACTIONS.RESET_HAND,
+    // });
+    // dispatch({
+    //   type: PLAYER_ACTIONS.RESET_ADMIN,
+    // });
+    navigateTo("/");
+  }
 
   socket.onmessage = (ev) => {
     const data = JSON.parse(ev.data);
