@@ -297,7 +297,6 @@ const Room = () => {
         // clearInterval(timeUpdater)
         break;
       case SocketEvents.POSITION_UPDATED:
-        console.log({ position_update_data: data });
         if (data.id_player !== playerId) {
           dispatch({
             type: ROOM_ACTIONS.SET_PLAYER_POSITION,
@@ -309,8 +308,18 @@ const Room = () => {
           });
         }
         break;
+      case SocketEvents.SCORE_UPDATED:
+        console.log({ score_updated_data: data });
+        if (data.id_player !== playerId) {
+          dispatch({
+            type: ROOM_ACTIONS.SET_PLAYER_SCORE,
+            payload: {
+              ...data,
+            },
+          });
+        }
+        break;
       case SocketEvents.NOTIFICATION:
-        // playNotification();
         Swal.fire({
           icon: "info",
           text: data.message,

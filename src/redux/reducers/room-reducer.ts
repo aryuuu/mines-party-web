@@ -105,6 +105,13 @@ const reducer = (state: Room = initialState, action: ActionType) => {
       };
     case ACTIONS.SET_PLAYER_SCORE:
       console.log(payload);
+      if (state.players.length === 0) {
+        return {
+          ...state,
+          players: [payload]
+        }
+      }
+
       const tempPlayers = state.players.map((p: Player) => {
         if (p.id_player === payload.id_player) {
           return {

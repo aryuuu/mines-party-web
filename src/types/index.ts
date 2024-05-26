@@ -54,6 +54,7 @@ export enum SocketEvents {
   MINE_OPENED = 'mine_opened',
   GAME_CLEARED = 'game_cleared',
   POSITION_UPDATED = 'position_updated',
+  SCORE_UPDATED = 'score_updated',
   KICK_PLAYER = 'kick_player',
   VOTE_KICK_PLAYER = 'vote_kick_player',
   NOTIFICATION = 'notification',
