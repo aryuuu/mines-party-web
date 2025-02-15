@@ -51,7 +51,7 @@ const Room = () => {
 
 
   useEffect(() => {
-    document.title = 'Room | Cepex';
+    document.title = 'Room | Mines';
     if (socket.url == null) {
       dispatch({
         type: ROOM_ACTIONS.SET_ROOM_ID,
@@ -186,7 +186,7 @@ const Room = () => {
 
   socket.onmessage = (ev) => {
     const data = JSON.parse(ev.data);
-    console.log({ data });
+    // console.log({ data });
 
     switch (data.event_type) {
       case SocketEvents.CHAT:
