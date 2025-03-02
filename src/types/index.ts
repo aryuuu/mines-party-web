@@ -21,6 +21,12 @@ export type Player = {
   score: number;
 };
 
+export type PlayerScores = {
+  id_player: string;
+  player: Player;
+  scores: number[];
+};
+
 export enum CellType {
   EMPTY = 'empty',
   FLAG = 'flag',
