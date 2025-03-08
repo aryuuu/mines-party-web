@@ -16,7 +16,8 @@ const initialState: Player = {
   avatar_url: '',
   name: '',
   is_admin: false,
-  score: 0
+  score: 0,
+  scores: [],
 }
 
 const reducer = (state = initialState, action: ActionType) => {
