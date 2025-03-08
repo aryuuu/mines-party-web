@@ -129,7 +129,7 @@ const Room = () => {
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.shiftKey && e.key === " ") {
+    if (e.shiftKey && e.key === " " || e.key === "z") {
       flagCellSfx.play();
       socket.send(
         JSON.stringify({
