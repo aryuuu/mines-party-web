@@ -3,8 +3,9 @@ export type Room = {
   capacity: number;
   id_host: string;
   is_started: boolean;
-  players: Player[];
+  players: { [key:string]: Player};
   player_positions: { [key: string]: { row: number; col: number } };
+  player_scores: PlayerScores[];
   field: CellType[][];
   time: number;
   flag_count: number;
@@ -19,12 +20,18 @@ export type Player = {
   name: string;
   is_admin: boolean;
   score: number;
+  scores: ScoreLog[];
+};
+
+export type ScoreLog = {
+  timestamp: number;
+  score: number;
 };
 
 export type PlayerScores = {
   id_player: string;
   player: Player;
-  scores: number[];
+  scores: ScoreLog[];
 };
 
 export enum CellType {

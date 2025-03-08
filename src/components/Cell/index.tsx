@@ -118,8 +118,10 @@ const Cell = (props: CellProps) => {
     moveCellSfx.play();
 
     // TODO: probably need some kind of debounce here
+    // TODO: prevent sending this event when the game is not started
     socket.send(JSON.stringify({
         event_type: SocketEvents.POSITION_UPDATED,
+        // TODO: publish next position instead? and mind the possibility of race condition with the state update by reducer
         row: currentRow,
         col: currentCol
     }));

@@ -161,6 +161,7 @@ const Room = () => {
       socket.send(
         JSON.stringify({
           event_type: SocketEvents.POSITION_UPDATED,
+          // TODO: publish next position instead? and mind the possibility of race condition with the state update by reducer
           row: currentRow,
           col: currentCol,
         }),
@@ -186,7 +187,6 @@ const Room = () => {
 
   socket.onmessage = (ev) => {
     const data = JSON.parse(ev.data);
-    // console.log({ data });
 
     switch (data.event_type) {
       case SocketEvents.CHAT:
@@ -194,20 +194,20 @@ const Room = () => {
         newMessageSfx.play();
         setChats([...chats, data]);
         break;
-      case SocketEvents.JOIN_ROOM_BROADCAST:
-        // playNotification();
+      case SocketEvents.JOIN_ROOM_BROADCAST: {
         const joinLog: Chat = {
           message: `${data.player.name} joined`,
           sender: "System",
         };
         setChats([...chats, joinLog]);
-        // if (data.player.id_player !== playerId) {
-        //     dispatch({
-        //         type: ROOM_ACTIONS.ADD_PLAYER,
-        //         payload: data.new_player
-        //     });
-        // }
+        if (data.player.id_player !== playerId) {
+            dispatch({
+                type: ROOM_ACTIONS.ADD_PLAYER,
+                payload: data.player
+            });
+        }
         break;
+      }
       case SocketEvents.LEAVE_ROOM:
         socket.close(1000);
         dispatch({
@@ -216,25 +216,26 @@ const Room = () => {
 
         navigateTo("/");
         break;
-      // case "leave-room-broadcast":
-      //     playNotification();
-      //     const leavingPlayer = players.find(
-      //         (p: Player) => p.id_player === data.id_leaving_player);
+      case "leave-room-broadcast": {
+        const leavingPlayer = players.find(
+            (p: Player) => p.id_player === data.id_leaving_player);
 
-      //     let leavingPlayerName = data.id_leaving_player;
-      //     if (leavingPlayer !== undefined) {
-      //         leavingPlayerName = leavingPlayer.name;
-      //     }
-      //     const leaveLog: Chat = {
-      //         message: `${leavingPlayerName} left`,
-      //         sender: 'System'
-      //     }
-      //     setChats([...chats, leaveLog])
-      //     dispatch({
-      //         type: ROOM_ACTIONS.REMOVE_PLAYER,
-      //         payload: data.id_leaving_player
-      //     })
-      //     break;
+        let leavingPlayerName = data.id_leaving_player;
+        if (leavingPlayer !== undefined) {
+            leavingPlayerName = leavingPlayer.name;
+        }
+        const leaveLog: Chat = {
+            message: `${leavingPlayerName} left`,
+            sender: 'System'
+        }
+        setChats([...chats, leaveLog])
+        dispatch({
+            type: ROOM_ACTIONS.REMOVE_PLAYER,
+            payload: data.id_leaving_player
+        })
+      break;
+
+      }
       case SocketEvents.START_GAME:
         if (data.success) {
           dispatch({
@@ -283,12 +284,6 @@ const Room = () => {
           type: ROOM_ACTIONS.SET_FIELD,
           payload: data.board,
         });
-        dispatch({
-          type: ROOM_ACTIONS.SET_PLAYERS,
-          payload: data.players,
-        });
-        // clearInterval(positionUpdater);
-        // clearInterval(timeUpdater)
         Swal.fire({
           icon: "error",
           title: "You lose!",
@@ -303,10 +298,10 @@ const Room = () => {
           type: ROOM_ACTIONS.SET_FIELD,
           payload: data.board,
         });
-        dispatch({
-          type: ROOM_ACTIONS.SET_PLAYERS,
-          payload: data.players,
-        });
+        // dispatch({
+        //   type: ROOM_ACTIONS.SET_PLAYERS,
+        //   payload: data.players,
+        // });
         Swal.fire({
           icon: "info",
           title: "You win!",
@@ -329,16 +324,14 @@ const Room = () => {
         break;
       case SocketEvents.SCORE_UPDATED:
         console.log({ score_updated_data: data });
-        if (data.id_player !== playerId) {
-          dispatch({
-            type: ROOM_ACTIONS.SET_PLAYER_SCORE,
-            payload: {
-              ...data,
-            },
-          });
-        }
+        dispatch({
+          type: ROOM_ACTIONS.SET_PLAYER_SCORE,
+          payload: {
+            ...data,
+          },
+        });
         break;
-      case SocketEvents.NOTIFICATION:
+      case SocketEvents.NOTIFICATION: {
         Swal.fire({
           icon: "info",
           text: data.message,
@@ -350,6 +343,7 @@ const Room = () => {
 
         setChats([...chats, notifLog]);
         break;
+      }
       // case SocketEvents.HOST_CHANGED:
       //     // playNotification();
       //     if (data.id_new_host === playerId) {

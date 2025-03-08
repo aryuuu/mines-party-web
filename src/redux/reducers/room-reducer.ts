@@ -29,8 +29,9 @@ const initialState: Room = {
   capacity: 0,
   id_host: "",
   is_started: false,
-  players: [],
+  players: {},
   player_positions: {},
+  player_scores: [],
   field: [],
   time: 0,
   flag_count: 0,
@@ -86,45 +87,48 @@ const reducer = (state: Room = initialState, action: ActionType) => {
         players: payload,
       };
     case ACTIONS.ADD_PLAYER:
+      console.log({payload});
+      
       return {
         ...state,
-        players: [...state.players, payload],
+        players: {...state.players, [payload.id_player]: payload}
       };
     case ACTIONS.REMOVE_PLAYER:
-      const newPlayers = state.players.filter(
-        (player: Player) => player.id_player !== payload,
-      );
+      delete state.players[payload];
       return {
         ...state,
-        players: newPlayers,
+        players: state.players
       };
     case ACTIONS.END_GAME:
       return {
         ...state,
         is_started: false,
       };
-    case ACTIONS.SET_PLAYER_SCORE:
-      console.log(payload);
-      if (state.players.length === 0) {
-        return {
-          ...state,
-          players: [payload]
-        }
+    case ACTIONS.SET_PLAYER_SCORE: {
+      if (Object.keys(payload.scoreboard).length == 0) {
+        return {...state};
       }
-
-      const tempPlayers = state.players.map((p: Player) => {
-        if (p.id_player === payload.id_player) {
-          return {
-            ...p,
-            score: payload.score,
-          };
-        }
-        return p;
+      
+      Object.keys(payload.scoreboard).forEach((id: string) => {
+        state.players[id].score = payload.scoreboard[id]
       });
+      
+      if (state.player_scores.length !== 0) {
+        state.player_scores.forEach(ps => ps.scores.push({score: payload.scoreboard[ps.id_player], timestamp: payload.timestamp}));
+      } else {
+        state.player_scores = Object.keys(payload.scoreboard).map(id => ({
+          id_player: id, 
+          player: state.players[id], 
+          scores: [{score: payload.scoreboard[id], timestamp: payload.timestamp}]
+        }));
+      }
       return {
         ...state,
-        players: tempPlayers,
-      };
+        players: {...state.players},
+        player_scores: [...state.player_scores],
+      }
+    }
+
     case ACTIONS.SET_FIELD:
       return {
         ...state,
@@ -169,7 +173,6 @@ const reducer = (state: Room = initialState, action: ActionType) => {
         current_row: payload.row,
       };
     case ACTIONS.SET_PLAYER_POSITION:
-      console.log({ pos_state: state.player_positions })
       return {
         ...state,
         player_positions: {
