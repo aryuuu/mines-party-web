@@ -32,6 +32,7 @@ const Room = () => {
     current_col: currentCol,
     current_row: currentRow,
     players,
+    player_scores,
   } = useSelector((state: RootState) => state.roomReducer);
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
   const [message, setMessage] = useState("");
@@ -514,7 +515,7 @@ const Room = () => {
         id="scoreboard-modal"
         className={`absolute bg-gray-900 ${showScoreboard ? "block" : "hidden"}`}
       >
-        <Scoreboard players={playerScore} />
+        <Scoreboard playerScores={player_scores} />
         <button onClick={() => onCloseScoreboard()}>Close</button>
       </div>
     </div>

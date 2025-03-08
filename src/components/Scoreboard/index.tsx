@@ -1,12 +1,17 @@
 import "react";
-import { PlayerScores } from "../../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/reducers/root-reducer";
+import { PlayerScores, ScoreLog } from "../../types";
 
 type ScoreboardProps = {
-  players: PlayerScores[];
+  playerScores: PlayerScores[];
 };
 
 const Scoreboard = (props: ScoreboardProps) => {
-  const { players } = props;
+  const { playerScores } = props;
+  const {
+    id_host: hostID,
+  } = useSelector((state: RootState) => state.roomReducer);
 
   // Chart dimensions
   const width = 600;
@@ -15,18 +20,21 @@ const Scoreboard = (props: ScoreboardProps) => {
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
   
+  const allTimestamps = playerScores.find(ps => ps.id_player === hostID)?.scores.map(s => s.timestamp);
   // Find min and max values across all players
-  const allScores = players.flatMap(player => player.scores);
+  // const allScores = playerScores.flatMap(player => player.scores);
+  const allScores = playerScores.flatMap(ps => ps.scores.map(e => e.score));
   const maxValue = Math.max(...allScores);
-  const minValue = 0; // Starting from 0 for a scoreboard
+  // const minValue = 0; // Starting from 0 for a scoreboard
+  const minValue = Math.min(...allScores);
   
   // Create a smooth path using bezier curves
-  const createSmoothPath = (playerScores: number[]) => {
+  const createSmoothPath = (playerScores: ScoreLog[]) => {
     if (playerScores.length < 2) return '';
     
-    const points = playerScores.map((score, i) => {
+    const points = playerScores.map((e, i) => {
       const x = padding + (i * (chartWidth / (playerScores.length - 1)));
-      const y = height - padding - ((score - minValue) / (maxValue - minValue) * chartHeight);
+      const y = height - padding - ((e.score - minValue) / (maxValue - minValue) * chartHeight);
       return { x, y };
     });
     
@@ -105,7 +113,7 @@ const Scoreboard = (props: ScoreboardProps) => {
           />
           
           {/* Lines for each player */}
-          {players.map((player, playerIndex) => (
+          {playerScores.map((player, playerIndex) => (
             <g key={`player-${playerIndex}`}>
               {/* Smooth line for this player */}
               <path
@@ -118,8 +126,9 @@ const Scoreboard = (props: ScoreboardProps) => {
               
               {/* Data points for this player */}
               {player.scores.map((score, i) => {
+                // TODO: adjust x pos based on timestamp
                 const x = padding + (i * (chartWidth / (player.scores.length - 1)));
-                const y = height - padding - ((score - minValue) / (maxValue - minValue) * chartHeight);
+                const y = height - padding - ((score.score - minValue) / (maxValue - minValue) * chartHeight);
                 return (
                   <g key={`point-${playerIndex}-${i}`}>
                     <circle
@@ -140,7 +149,7 @@ const Scoreboard = (props: ScoreboardProps) => {
                         className="text-xs font-bold"
                         fill="#eeeeee"
                       >
-                        {score}
+                        {score.score}
                       </text>
                     )}
                   </g>
