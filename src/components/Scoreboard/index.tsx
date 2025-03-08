@@ -1,6 +1,6 @@
 import "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/reducers/root-reducer";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../redux/reducers/root-reducer";
 import { PlayerScores, ScoreLog } from "../../types";
 
 type ScoreboardProps = {
@@ -9,9 +9,9 @@ type ScoreboardProps = {
 
 const Scoreboard = (props: ScoreboardProps) => {
   const { playerScores } = props;
-  const {
-    id_host: hostID,
-  } = useSelector((state: RootState) => state.roomReducer);
+  // const {
+  //   id_host: hostID,
+  // } = useSelector((state: RootState) => state.roomReducer);
 
   // Chart dimensions
   const width = 600;
@@ -20,7 +20,7 @@ const Scoreboard = (props: ScoreboardProps) => {
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
   
-  const allTimestamps = playerScores.find(ps => ps.id_player === hostID)?.scores.map(s => s.timestamp);
+  // const allTimestamps = playerScores.find(ps => ps.id_player === hostID)?.scores.map(s => s.timestamp);
   // Find min and max values across all players
   // const allScores = playerScores.flatMap(player => player.scores);
   const allScores = playerScores.flatMap(ps => ps.scores.map(e => e.score));

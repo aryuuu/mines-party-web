@@ -37,7 +37,7 @@ const Room = () => {
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState<Chat[]>([]);
-  const [playerScore, setPlayerScore] = useState<Player[]>([]);
+  // const [playerScore, setPlayerScore] = useState<Player[]>([]);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [timer, _setTimer] = useState(0);
 
@@ -113,16 +113,16 @@ const Room = () => {
     navigateTo("/");
   };
 
-  const onShowScoreboard = () => {
-    console.log({ players });
-    const scoreboard = Object.values<Player>(players)
-      .map((player: Player) => {
-        return { ...player };
-      })
-      .sort((a, b) => b.score - a.score);
-    setPlayerScore(scoreboard);
-    setShowScoreboard(true);
-  };
+  // const onShowScoreboard = () => {
+  //   // console.log({ players });
+  //   // const scoreboard = Object.values<Player>(players)
+  //   //   .map((player: Player) => {
+  //   //     return { ...player };
+  //   //   })
+  //   //   .sort((a, b) => b.score - a.score);
+  //   // setPlayerScore(scoreboard);
+  //   setShowScoreboard(true);
+  // };
 
   const onCloseScoreboard = () => {
     setShowScoreboard(false);
@@ -456,7 +456,7 @@ const Room = () => {
           </CopyToClipboard>
           <div
             id="scoreboard-button"
-            onClick={() => onShowScoreboard()}
+            onClick={() => setShowScoreboard(!showScoreboard)}
             className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
           >
             Scoreboard

@@ -1,5 +1,5 @@
 import { ActionType } from "../types";
-import { Player, Room } from "../../types";
+import { Room } from "../../types";
 
 export enum ACTIONS {
   SET_ROOM = "SET_ROOM",
