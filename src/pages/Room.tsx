@@ -324,7 +324,6 @@ const Room = () => {
         }
         break;
       case SocketEvents.SCORE_UPDATED:
-        console.log({ score_updated_data: data });
         dispatch({
           type: ROOM_ACTIONS.SET_PLAYER_SCORE,
           payload: {

@@ -1,5 +1,7 @@
 # Mines Party
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3418e7ab-23e4-469a-95f9-b78d6688fa32/deploy-status)](https://app.netlify.com/sites/mines-party/deploys)
+
 ## Repositories
 <div>
 	<p>

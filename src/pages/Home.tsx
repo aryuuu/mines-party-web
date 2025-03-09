@@ -55,9 +55,7 @@ const Home = () => {
   };
 
   socket.onmessage = (ev) => {
-    console.log(ev);
     const data = JSON.parse(ev.data);
-    console.log({ data });
     switch (data.event_type) {
       case SocketEvents.CREATE_ROOM:
         navigateTo(`/room/${roomId}`);
@@ -99,16 +97,11 @@ const Home = () => {
   };
 
   const onCreateRoom = async () => {
-    console.log("Create room", {
-      name,
-      roomId,
-    });
     setIsCreate(true);
     try {
       const response = await axios.post(
         `${MINES_PARTY_SERVER_BASE_URL}/game/create`,
       );
-      console.log({ res: response.data })
       dispatch({
         type: ROOM_ACTIONS.SET_ROOM_ID,
         payload: response.data,
@@ -130,10 +123,6 @@ const Home = () => {
 
   const onJoinRoom = () => {
     setIsCreate(false);
-    console.log("Join room", {
-      name,
-      roomId,
-    });
     dispatch({
       type: SOCKET_ACTIONS.INIT_SOCKET,
       payload: roomId,

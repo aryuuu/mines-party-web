@@ -87,8 +87,6 @@ const reducer = (state: Room = initialState, action: ActionType) => {
         players: payload,
       };
     case ACTIONS.ADD_PLAYER:
-      console.log({payload});
-      
       return {
         ...state,
         players: {...state.players, [payload.id_player]: payload}
