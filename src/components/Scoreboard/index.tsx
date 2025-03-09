@@ -64,7 +64,7 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   return (
     <div className="p-4">
-      <div className="mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-200">
+      <div className="mx-auto bg-white dark:bg-[#4c566a] rounded-lg shadow-lg p-4 border border-gray-200">
         <svg width={width} height={height} className="overflow-visible">
           {/* Y-axis grid lines */}
           {[0, 1, 2, 3, 4].map((index) => {
