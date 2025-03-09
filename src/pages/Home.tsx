@@ -118,17 +118,15 @@ const Home = () => {
       });
       return;
     }
-    // navigateTo(`/room/${roomId}`);
   };
 
   const onJoinRoom = () => {
     setIsCreate(false);
+    // TODO: only init socket if socket is not initiated
     dispatch({
       type: SOCKET_ACTIONS.INIT_SOCKET,
       payload: roomId,
     });
-    // TODO: hit join room endpoint
-    // navigateTo(`/room/${roomId}`);
   };
 
   const onUpdateUsername = (value: string) => {

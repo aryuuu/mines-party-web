@@ -11,14 +11,6 @@ const initialState: Socket = {
   socket: {} as WebSocket
 }
 
-// socket.onopen = () => {
-//   console.log('connected to websocket server');
-// }
-
-// socket.onmessage = (ev) => {
-//   console.log(ev.data)
-// }
-
 const reducer = (state = initialState, action: ActionType) => {
   const { type, payload } = action;
 

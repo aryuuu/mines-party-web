@@ -113,17 +113,6 @@ const Room = () => {
     navigateTo("/");
   };
 
-  // const onShowScoreboard = () => {
-  //   // console.log({ players });
-  //   // const scoreboard = Object.values<Player>(players)
-  //   //   .map((player: Player) => {
-  //   //     return { ...player };
-  //   //   })
-  //   //   .sort((a, b) => b.score - a.score);
-  //   // setPlayerScore(scoreboard);
-  //   setShowScoreboard(true);
-  // };
-
   const onCloseScoreboard = () => {
     setShowScoreboard(false);
   };
@@ -177,9 +166,6 @@ const Room = () => {
     dispatch({
       type: SOCKET_ACTIONS.REMOVE_SOCKET
     });
-    // dispatch({
-    //   type: PLAYER_ACTIONS.RESET_HAND,
-    // });
     // dispatch({
     //   type: PLAYER_ACTIONS.RESET_ADMIN,
     // });
@@ -246,23 +232,6 @@ const Room = () => {
             type: ROOM_ACTIONS.SET_FIELD,
             payload: data.board,
           });
-          // positionUpdater = setInterval(() => {
-          //     console.log('update pos cast')
-          //     console.log({
-          //         event_type: SocketEvents.POSITION_UPDATED,
-          //         row: currentRow,
-          //         col: currentCol
-          //     })
-          //     socket.send(JSON.stringify({
-          //         event_type: SocketEvents.POSITION_UPDATED,
-          //         row: currentRow,
-          //         col: currentCol
-          //     }));
-          // }, 1000);
-          // timeUpdater = setInterval(() => {
-          //     console.log('timer', timer);
-          //     setTimer(timer + 1);
-          // }, 1000);
         } else {
           Swal.fire({
             icon: "warning",
@@ -299,6 +268,7 @@ const Room = () => {
           type: ROOM_ACTIONS.SET_FIELD,
           payload: data.board,
         });
+        // TODO: update the scoreboard as well
         // dispatch({
         //   type: ROOM_ACTIONS.SET_PLAYERS,
         //   payload: data.players,
@@ -308,8 +278,6 @@ const Room = () => {
           title: "You win!",
           text: "Game cleared",
         });
-        // clearInterval(positionUpdater);
-        // clearInterval(timeUpdater)
         break;
       case SocketEvents.POSITION_UPDATED:
         if (data.id_player !== playerId) {
@@ -407,60 +375,95 @@ const Room = () => {
       tabIndex={-1}
     >
       <div id="control-panel" className="flex flex-col justify-center p-10">
-        <div id="game-stat" className="flex flex-row">
-          <div id="timer" className="p-1 m-1">
-            <Timer time={timer} />
-          </div>
-          <div id="flag-count" className="p-1 m-1">
-            flag-count
-          </div>
-          <div id="mine-count" className="p-1 m-1">
-            mine-count
-          </div>
-        </div>
-        <div id="button-list" className="flex flex-row">
+        <li className="group relative dropdown  px-4 cursor-pointer font-bold text-base uppercase tracking-wide list-none">
           <div
-            id="start-button"
+            id="control-button"
             onClick={() => onStartGame()}
             className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
           >
-            Start
+            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 16 4-4-4-4"/>
+            </svg>
           </div>
-          <div
-            id="pause-button"
-            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-          >
-            Pause
+          <div className="group-hover:block dropdown-menu absolute hidden h-auto">
+            <ul className="top-0 shadow ">
+              <li>
+                <div
+                  id="start-button"
+                  onClick={() => onStartGame()}
+                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+                >
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 18V6l8 6-8 6Z"/>
+                  </svg>
+                </div>
+              </li>
+              <li>
+                <div
+                  id="pause-button"
+                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+                >
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6H8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm7 0h-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Z"/>
+                  </svg>
+                </div>
+              </li>
+              <li>
+                <div
+                  id="exit-button"
+                  onClick={() => onExitGame()}
+                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+                >
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
+                  </svg>
+                </div>
+              </li>
+              <li>
+                <CopyToClipboard
+                  text={window.location.href}
+                  onCopy={() =>
+                    Swal.fire({
+                      icon: "success",
+                      title: "Link copied",
+                      text: window.location.href,
+                    })
+                  }
+                >
+                  <div className="cell bg-gray-800 p-2 m-1 rounded hover:bg-gray-500">
+                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                      <path fill-rule="evenodd" d="M18 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1V9a4 4 0 0 0-4-4h-3a1.99 1.99 0 0 0-1 .267V5a2 2 0 0 1 2-2h7Z" clip-rule="evenodd"/>
+                      <path fill-rule="evenodd" d="M8 7.054V11H4.2a2 2 0 0 1 .281-.432l2.46-2.87A2 2 0 0 1 8 7.054ZM10 7v4a2 2 0 0 1-2 2H4v6a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
+                </CopyToClipboard>
+              </li>
+              <li>
+                <div
+                  id="scoreboard-button"
+                  onClick={() => setShowScoreboard(!showScoreboard)}
+                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+                >
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v15a1 1 0 0 0 1 1h15M8 16l2.5-5.5 3 3L17.273 7 20 9.667"/>
+                  </svg>
+                </div>
+              </li>
+              <li>
+                <div
+                  id="settings-button"
+                  onClick={() => setShowScoreboard(!showScoreboard)}
+                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+                >
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
+                  </svg>
+                </div>
+              </li>
+            </ul>
           </div>
-          <div
-            id="exit-button"
-            onClick={() => onExitGame()}
-            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-          >
-            Exit
-          </div>
-          <CopyToClipboard
-            text={window.location.href}
-            onCopy={() =>
-              Swal.fire({
-                icon: "success",
-                title: "Link copied",
-                text: window.location.href,
-              })
-            }
-          >
-            <div className="cell bg-gray-800 p-2 m-1 rounded hover:bg-gray-500">
-              Copy link
-            </div>
-          </CopyToClipboard>
-          <div
-            id="scoreboard-button"
-            onClick={() => setShowScoreboard(!showScoreboard)}
-            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-          >
-            Scoreboard
-          </div>
-        </div>
+        </li>
+
       </div>
       <div id="game-panel" className="flex flex-row items-center p-10">
         <div id="field" className="flex flex-col">
