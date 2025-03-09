@@ -18,6 +18,7 @@ export type Player = {
   id_player: string;
   avatar_url: string;
   name: string;
+  color: string;
   is_admin: boolean;
   score: number;
   scores: ScoreLog[];

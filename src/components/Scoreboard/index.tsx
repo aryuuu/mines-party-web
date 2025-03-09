@@ -120,7 +120,7 @@ const Scoreboard = (props: ScoreboardProps) => {
               <path
                 d={createSmoothPath(ps.scores)}
                 fill="none"
-                stroke="#dddddd"
+                stroke={ps.player.color}
                 strokeWidth="2"
                 className="transition-all duration-300 ease-in-out"
               />
@@ -132,17 +132,18 @@ const Scoreboard = (props: ScoreboardProps) => {
                 const y = height - padding - ((score.score - minValue) / (maxValue - minValue) * chartHeight);
                 return (
                   <g key={`point-${psIdx}-${i}`}>
-                    <circle
-                      cx={x}
-                      cy={y}
-                      r="4"
-                      fill="white"
-                      stroke="#dddddd"
-                      strokeWidth="2"
-                      className="transition-all duration-300 ease-in-out"
-                    />
                     {/* Only show scores at the last round */}
                     {i === ps.scores.length - 1 && (
+                      <>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="4"
+                          fill="white"
+                          stroke={ps.player.color}
+                          strokeWidth="2"
+                          className="transition-all duration-300 ease-in-out"
+                        />
                       <text
                         x={x + 8}
                         y={y}
@@ -152,6 +153,7 @@ const Scoreboard = (props: ScoreboardProps) => {
                       >
                         {`${score.score} (${ps.player.name})`}
                       </text>
+                      </>
                     )}
                   </g>
                 );
