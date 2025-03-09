@@ -37,8 +37,6 @@ const Room = () => {
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
   // const [message, setMessage] = useState("");
   const [chats, setChats] = useState<Chat[]>([]);
-  // const [playerScore, setPlayerScore] = useState<Player[]>([]);
-  const [showScoreboard, setShowScoreboard] = useState(false);
   // const [timer, _setTimer] = useState(0);
 
   const dispatch = useDispatch();
@@ -111,10 +109,6 @@ const Room = () => {
       type: SOCKET_ACTIONS.REMOVE_SOCKET
     });
     navigateTo("/");
-  };
-
-  const onCloseScoreboard = () => {
-    setShowScoreboard(false);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -420,17 +414,8 @@ const Room = () => {
             </div>
           </CopyToClipboard>
           <div
-            id="scoreboard-button"
-            onClick={() => setShowScoreboard(!showScoreboard)}
-            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-          >
-            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v15a1 1 0 0 0 1 1h15M8 16l2.5-5.5 3 3L17.273 7 20 9.667"/>
-            </svg>
-          </div>
-          <div
             id="settings-button"
-            onClick={() => setShowScoreboard(!showScoreboard)}
+            onClick={() => {}}
             className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
           >
             <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -490,13 +475,6 @@ const Room = () => {
       //   </div>
       // </div>
       }
-      <div
-        id="scoreboard-modal"
-        className={`absolute bg-gray-900 ${showScoreboard ? "block" : "hidden"}`}
-      >
-        <Scoreboard playerScores={player_scores} />
-        <button onClick={() => onCloseScoreboard()}>Close</button>
-      </div>
     </div>
   );
 };
