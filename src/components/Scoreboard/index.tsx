@@ -5,25 +5,32 @@ type ScoreboardProps = {
   playerScores: PlayerScores[];
 };
 
+// const roundToNiceNumber = (val: number) => {
+//   if (val === 0) return 0;
+
+//   const sign = val < 0 ? -1 : 1;
+//   const absVal = Math.abs(val);
+//   const magnitude = Math.pow(10, Math.floor(Math.log10(absVal)));
+//   const normalized = absVal / magnitude;
+//   const multiplier = Math.ceil(normalized / 10) * 10;
+
+//   return sign * multiplier * magnitude;
+
+// }
+
 const Scoreboard = (props: ScoreboardProps) => {
   const { playerScores } = props;
 
-  // Chart dimensions
   const width = 600;
   const height = 300;
   const padding = 40;
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
   
-  // const allTimestamps = playerScores.find(ps => ps.id_player === hostID)?.scores.map(s => s.timestamp);
-  // Find min and max values across all players
-  // const allScores = playerScores.flatMap(player => player.scores);
   const allScores = playerScores.flatMap(ps => ps.scores.map(e => e.score));
   const maxValue = Math.max(...allScores);
-  // const minValue = 0; // Starting from 0 for a scoreboard
   const minValue = Math.min(...allScores);
   
-  // Create a smooth path using bezier curves
   const createSmoothPath = (playerScores: ScoreLog[]) => {
     if (playerScores.length < 2) return '';
     
@@ -57,7 +64,7 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   return (
     <div className="p-4">
-      <div className="mx-auto bg-white rounded-lg shadow-lg p-4 border border-gray-200">
+      <div className="mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-200">
         <svg width={width} height={height} className="overflow-visible">
           {/* Y-axis grid lines */}
           {[0, 1, 2, 3, 4].map((index) => {
@@ -78,7 +85,7 @@ const Scoreboard = (props: ScoreboardProps) => {
                   y={y} 
                   textAnchor="end" 
                   dominantBaseline="middle" 
-                  className="text-xs text-gray-500"
+                  className="text-xs text-gray-500 dark:fill-white"
                 >
                   {value}
                 </text>
@@ -107,11 +114,11 @@ const Scoreboard = (props: ScoreboardProps) => {
           />
           
           {/* Lines for each player */}
-          {playerScores.map((player, playerIndex) => (
-            <g key={`player-${playerIndex}`}>
+          {playerScores.map((ps, psIdx) => (
+            <g key={`player-${psIdx}`}>
               {/* Smooth line for this player */}
               <path
-                d={createSmoothPath(player.scores)}
+                d={createSmoothPath(ps.scores)}
                 fill="none"
                 stroke="#dddddd"
                 strokeWidth="2"
@@ -119,12 +126,12 @@ const Scoreboard = (props: ScoreboardProps) => {
               />
               
               {/* Data points for this player */}
-              {player.scores.map((score, i) => {
+              {ps.scores.map((score, i) => {
                 // TODO: adjust x pos based on timestamp
-                const x = padding + (i * (chartWidth / (player.scores.length - 1)));
+                const x = padding + (i * (chartWidth / (ps.scores.length - 1)));
                 const y = height - padding - ((score.score - minValue) / (maxValue - minValue) * chartHeight);
                 return (
-                  <g key={`point-${playerIndex}-${i}`}>
+                  <g key={`point-${psIdx}-${i}`}>
                     <circle
                       cx={x}
                       cy={y}
@@ -135,7 +142,7 @@ const Scoreboard = (props: ScoreboardProps) => {
                       className="transition-all duration-300 ease-in-out"
                     />
                     {/* Only show scores at the last round */}
-                    {i === player.scores.length - 1 && (
+                    {i === ps.scores.length - 1 && (
                       <text
                         x={x + 8}
                         y={y}
@@ -143,7 +150,7 @@ const Scoreboard = (props: ScoreboardProps) => {
                         className="text-xs font-bold"
                         fill="#eeeeee"
                       >
-                        {score.score}
+                        {`${score.score} (${ps.player.name})`}
                       </text>
                     )}
                   </g>
