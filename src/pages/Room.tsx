@@ -11,9 +11,9 @@ import { ACTIONS as ROOM_ACTIONS } from "../redux/reducers/room-reducer";
 import { ACTIONS as SOCKET_ACTIONS } from "../redux/reducers/socket-reducer";
 
 import Cell from "../components/Cell";
-import ChatCard from "../components/ChatCard";
+// import ChatCard from "../components/ChatCard";
 import Scoreboard from "../components/Scoreboard";
-import Timer from "../components/Timer";
+// import Timer from "../components/Timer";
 import { SocketEvents, Chat, CellType, Player } from "../types";
 import { flagCellSfx, moveCellSfx, newMessageSfx, openCellSfx } from "../sfx";
 
@@ -35,11 +35,11 @@ const Room = () => {
     player_scores,
   } = useSelector((state: RootState) => state.roomReducer);
   const socket = useSelector((state: RootState) => state.socketReducer.socket);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [chats, setChats] = useState<Chat[]>([]);
   // const [playerScore, setPlayerScore] = useState<Player[]>([]);
   const [showScoreboard, setShowScoreboard] = useState(false);
-  const [timer, _setTimer] = useState(0);
+  // const [timer, _setTimer] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -62,18 +62,18 @@ const Room = () => {
     }
   }, [dispatch, roomId, socket.url, navigateTo]);
 
-  const onSendChat = () => {
-    const content = message.trim();
-    if (content !== "") {
-      socket.send(
-        JSON.stringify({
-          event_type: "chat",
-          message: content,
-        }),
-      );
-    }
-    setMessage("");
-  };
+  // const onSendChat = () => {
+  //   const content = message.trim();
+  //   if (content !== "") {
+  //     socket.send(
+  //       JSON.stringify({
+  //         event_type: "chat",
+  //         message: content,
+  //       }),
+  //     );
+  //   }
+  //   setMessage("");
+  // };
 
   const keyMap: Map<string, string> = new Map([
     ["ArrowUp", ROOM_ACTIONS.MOVE_UP],
@@ -374,98 +374,70 @@ const Room = () => {
       onKeyDown={onKeyDown}
       tabIndex={-1}
     >
-      <div id="control-panel" className="flex flex-col justify-center p-10">
-        <li className="group relative dropdown  px-4 cursor-pointer font-bold text-base uppercase tracking-wide list-none">
+      <div id="game-panel" className="flex flex-col items-center p-10">
+        <div id="control-panel" className="flex flex-row justify-center m-3">
           <div
-            id="control-button"
+            id="start-button"
             onClick={() => onStartGame()}
             className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
           >
             <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 16 4-4-4-4"/>
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 18V6l8 6-8 6Z"/>
             </svg>
           </div>
-          <div className="group-hover:block dropdown-menu absolute hidden h-auto">
-            <ul className="top-0 shadow ">
-              <li>
-                <div
-                  id="start-button"
-                  onClick={() => onStartGame()}
-                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 18V6l8 6-8 6Z"/>
-                  </svg>
-                </div>
-              </li>
-              <li>
-                <div
-                  id="pause-button"
-                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6H8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm7 0h-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Z"/>
-                  </svg>
-                </div>
-              </li>
-              <li>
-                <div
-                  id="exit-button"
-                  onClick={() => onExitGame()}
-                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
-                  </svg>
-                </div>
-              </li>
-              <li>
-                <CopyToClipboard
-                  text={window.location.href}
-                  onCopy={() =>
-                    Swal.fire({
-                      icon: "success",
-                      title: "Link copied",
-                      text: window.location.href,
-                    })
-                  }
-                >
-                  <div className="cell bg-gray-800 p-2 m-1 rounded hover:bg-gray-500">
-                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                      <path fill-rule="evenodd" d="M18 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1V9a4 4 0 0 0-4-4h-3a1.99 1.99 0 0 0-1 .267V5a2 2 0 0 1 2-2h7Z" clip-rule="evenodd"/>
-                      <path fill-rule="evenodd" d="M8 7.054V11H4.2a2 2 0 0 1 .281-.432l2.46-2.87A2 2 0 0 1 8 7.054ZM10 7v4a2 2 0 0 1-2 2H4v6a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                </CopyToClipboard>
-              </li>
-              <li>
-                <div
-                  id="scoreboard-button"
-                  onClick={() => setShowScoreboard(!showScoreboard)}
-                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v15a1 1 0 0 0 1 1h15M8 16l2.5-5.5 3 3L17.273 7 20 9.667"/>
-                  </svg>
-                </div>
-              </li>
-              <li>
-                <div
-                  id="settings-button"
-                  onClick={() => setShowScoreboard(!showScoreboard)}
-                  className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
-                  </svg>
-                </div>
-              </li>
-            </ul>
+          <div
+            id="pause-button"
+            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+          >
+            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6H8a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm7 0h-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Z"/>
+            </svg>
           </div>
-        </li>
-
-      </div>
-      <div id="game-panel" className="flex flex-row items-center p-10">
+          <div
+            id="exit-button"
+            onClick={() => onExitGame()}
+            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+          >
+            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
+            </svg>
+          </div>
+          <CopyToClipboard
+            text={window.location.href}
+            onCopy={() =>
+              Swal.fire({
+                icon: "success",
+                title: "Link copied",
+                text: window.location.href,
+              })
+            }
+          >
+            <div className="cell bg-gray-800 p-2 m-1 rounded hover:bg-gray-500">
+              <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M18 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1V9a4 4 0 0 0-4-4h-3a1.99 1.99 0 0 0-1 .267V5a2 2 0 0 1 2-2h7Z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M8 7.054V11H4.2a2 2 0 0 1 .281-.432l2.46-2.87A2 2 0 0 1 8 7.054ZM10 7v4a2 2 0 0 1-2 2H4v6a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </CopyToClipboard>
+          <div
+            id="scoreboard-button"
+            onClick={() => setShowScoreboard(!showScoreboard)}
+            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+          >
+            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v15a1 1 0 0 0 1 1h15M8 16l2.5-5.5 3 3L17.273 7 20 9.667"/>
+            </svg>
+          </div>
+          <div
+            id="settings-button"
+            onClick={() => setShowScoreboard(!showScoreboard)}
+            className="cell bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
+          >
+            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.75 4H19M7.75 4a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 4h2.25m13.5 6H19m-2.25 0a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 10h11.25m-4.5 6H19M7.75 16a2.25 2.25 0 0 1-4.5 0m4.5 0a2.25 2.25 0 0 0-4.5 0M1 16h2.25"/>
+            </svg>
+          </div>
+        </div>
         <div id="field" className="flex flex-col">
           {field && field.length > 0 ? (
             field.map((row: CellType[], rowIndex: number) => {
@@ -490,29 +462,34 @@ const Room = () => {
           )}
         </div>
       </div>
-      <div
-        id="chat-panel"
-        className="flex flex-col justify-end pt-20 pb-20 pr-5"
-      >
-        <div id="chat-items" className="grid overflow-scroll">
-          {chats.map((item, index) => (
-            <ChatCard key={index} chat={item.message} sender={item.sender} />
-          ))}
-          <div id="chat-base"></div>
-        </div>
-        <div id="chat-input" className="flex flex-row">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key == "Enter") {
-                onSendChat();
-              }
-            }}
-          />
-        </div>
+      <div id="monitor-panel">
+        <Scoreboard playerScores={player_scores} />
       </div>
+      {
+      // <div
+      //   id="chat-panel"
+      //   className="flex flex-col justify-end pt-20 pb-20 pr-5"
+      // >
+      //   <div id="chat-items" className="grid overflow-scroll">
+      //     {chats.map((item, index) => (
+      //       <ChatCard key={index} chat={item.message} sender={item.sender} />
+      //     ))}
+      //     <div id="chat-base"></div>
+      //   </div>
+      //   <div id="chat-input" className="flex flex-row">
+      //     <input
+      //       type="text"
+      //       value={message}
+      //       onChange={(e) => setMessage(e.target.value)}
+      //       onKeyPress={(e) => {
+      //         if (e.key == "Enter") {
+      //           onSendChat();
+      //         }
+      //       }}
+      //     />
+      //   </div>
+      // </div>
+      }
       <div
         id="scoreboard-modal"
         className={`absolute bg-gray-900 ${showScoreboard ? "block" : "hidden"}`}

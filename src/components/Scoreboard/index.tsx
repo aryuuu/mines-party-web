@@ -1,6 +1,4 @@
 import "react";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../redux/reducers/root-reducer";
 import { PlayerScores, ScoreLog } from "../../types";
 
 type ScoreboardProps = {
@@ -9,9 +7,6 @@ type ScoreboardProps = {
 
 const Scoreboard = (props: ScoreboardProps) => {
   const { playerScores } = props;
-  // const {
-  //   id_host: hostID,
-  // } = useSelector((state: RootState) => state.roomReducer);
 
   // Chart dimensions
   const width = 600;
@@ -62,7 +57,6 @@ const Scoreboard = (props: ScoreboardProps) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-bold text-center mb-4">Players Scoreboard</h2>
       <div className="mx-auto bg-white rounded-lg shadow-lg p-4 border border-gray-200">
         <svg width={width} height={height} className="overflow-visible">
           {/* Y-axis grid lines */}
