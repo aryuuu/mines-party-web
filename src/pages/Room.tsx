@@ -124,31 +124,34 @@ const Room = () => {
     Swal.fire({
       title: "Settings",
       html: `
-      <div class="form-group">
-        <label for="difficulty" class="swal2-label">Difficulty:</label>
-        <select id="difficulty" class="swal2-input bg-white" placeholder="Points" value="10" min="1" max="100">
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-      </div>
-      <div class="form-group mt-3">
-        <label for="cell-point" class="swal2-checkbox-label">
-            Cell Point
-            <input type="number" value="1" min="1" id="cell-point" class="swal2-checkbox">
-        </label>
-      </div>
-      <div class="form-group mt-3">
-        <label for="Mine Point" class="swal2-checkbox-label">
-          Mine Point
-          <input type="number" id="mine-point" value="-50" class="swal2-checkbox">
-        </label>
-      </div>
-      <div class="form-group mt-3">
-        <label for="count-cold-open" class="swal2-checkbox-label">
-          <input type="checkbox" id="count-cold-open" class="swal2-checkbox">
-          Count Cold Open
-        </label>
+      <div class="space-y-4">
+        <!-- Difficulty -->
+        <div class="mb-4">
+          <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">Difficulty:</label>
+          <select id="difficulty" class="w-full max-w-xs bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        
+        <!-- Cell Point -->
+        <div class="mb-4">
+          <label for="cell-point" class="block text-sm font-medium text-gray-700 mb-1">Cell Point:</label>
+          <input type="number" id="cell-point" value="1" min="1" class="w-full max-w-xs bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        
+        <!-- Mine Point -->
+        <div class="mb-4">
+          <label for="mine-point" class="block text-sm font-medium text-gray-700 mb-1">Mine Point:</label>
+          <input type="number" id="mine-point" value="-50" class="w-full max-w-xs bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        
+        <!-- Count Cold Open -->
+        <div class="flex items-center">
+          <input type="checkbox" id="count-cold-open" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+          <label for="count-cold-open" class="ml-2 block text-sm text-gray-700">Count Cold Open</label>
+        </div>
       </div>
 `,
     focusConfirm: false,
