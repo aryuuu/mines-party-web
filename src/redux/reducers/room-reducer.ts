@@ -26,8 +26,6 @@ export enum ACTIONS {
 
 const initialState: Room = {
   id_room: "",
-  capacity: 0,
-  id_host: "",
   is_started: false,
   players: {},
   player_positions: {},
@@ -38,6 +36,14 @@ const initialState: Room = {
   mine_count: 0,
   current_col: 0,
   current_row: 0,
+  settings: { 
+    id_host: '', 
+    capacity: 0, 
+    difficulty: 'hard', 
+    cell_score: 1, 
+    mine_score: -50,
+    count_cold_open: false,
+  },
 };
 
 const reducer = (state: Room = initialState, action: ActionType) => {
@@ -46,8 +52,6 @@ const reducer = (state: Room = initialState, action: ActionType) => {
   switch (type) {
     case ACTIONS.SET_ROOM:
       state.id_room = payload.id_room;
-      state.id_host = payload.id_host;
-      state.capacity = payload.capacity;
       state.is_started = payload.is_started;
       state.players = payload.players;
 

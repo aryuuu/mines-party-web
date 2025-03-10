@@ -160,10 +160,10 @@ const Room = () => {
       input: 'game-settings-input'
     },
       preConfirm: () => {
-        const difficulty = document.getElementById('difficulty')?.value;
-        const countColdOpen = document.getElementById('count-cold-open')?.checked;
-        const cellScore = document.getElementById('cell-point')?.value;
-        const minesScore = document.getElementById('mine-point')?.value;
+        const difficulty = (document.getElementById('difficulty') as HTMLInputElement)?.value;
+        const countColdOpen = (document.getElementById('count-cold-open') as HTMLInputElement)?.checked;
+        const cellScore = (document.getElementById('cell-point') as HTMLInputElement)?.value;
+        const minesScore = (document.getElementById('mine-point') as HTMLInputElement)?.value;
 
         // TODO: basic validation
 

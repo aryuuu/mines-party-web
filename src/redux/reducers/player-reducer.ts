@@ -16,6 +16,7 @@ const initialState: Player = {
   avatar_url: '',
   name: '',
   is_admin: false,
+  color: '',
   score: 0,
   scores: [],
 }
