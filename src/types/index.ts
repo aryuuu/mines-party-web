@@ -1,7 +1,5 @@
 export type Room = {
   id_room: string;
-  capacity: number;
-  id_host: string;
   is_started: boolean;
   players: { [key:string]: Player};
   player_positions: { [key: string]: { row: number; col: number } };
@@ -12,6 +10,16 @@ export type Room = {
   mine_count: number;
   current_row: number;
   current_col: number;
+  settings: RoomSettings;
+};
+
+export type RoomSettings = {
+  id_host: string;
+  capacity: number;
+  difficulty: "easy" | "medium" | "hard";
+  cell_score: number;
+  mine_score: number;
+  count_cold_open: boolean;
 };
 
 export type Player = {
@@ -69,6 +77,8 @@ export enum SocketEvents {
   GAME_CLEARED = 'game_cleared',
   POSITION_UPDATED = 'position_updated',
   SCORE_UPDATED = 'score_updated',
+  CHANGE_SETTINGS = 'change_settings',
+  SETTINGS_UPDATED = 'settings_updated',
   KICK_PLAYER = 'kick_player',
   VOTE_KICK_PLAYER = 'vote_kick_player',
   NOTIFICATION = 'notification',

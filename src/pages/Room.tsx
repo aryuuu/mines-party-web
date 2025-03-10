@@ -97,19 +97,93 @@ const Room = () => {
   };
 
   const onExitGame = () => {
-    socket.send(
-      JSON.stringify({
-        event_type: SocketEvents.LEAVE_ROOM,
-      }),
-    );
-    dispatch({
-      type: ROOM_ACTIONS.RESET_ROOM,
-    });
-    dispatch({
-      type: SOCKET_ACTIONS.REMOVE_SOCKET
-    });
-    navigateTo("/");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Go to home",
+      icon: "warning",
+      showCancelButton: true,
+    }).then(result => {
+        if (result.isConfirmed) {
+          socket.send(
+            JSON.stringify({
+              event_type: SocketEvents.LEAVE_ROOM,
+            }),
+          );
+          dispatch({
+            type: ROOM_ACTIONS.RESET_ROOM,
+          });
+          dispatch({
+            type: SOCKET_ACTIONS.REMOVE_SOCKET
+          });
+          navigateTo("/");
+        }
+      })
   };
+
+  const onClickSettings = () => {
+    Swal.fire({
+      title: "Settings",
+      html: `
+      <div class="form-group">
+        <label for="difficulty" class="swal2-label">Difficulty:</label>
+        <select id="difficulty" class="swal2-input bg-white" placeholder="Points" value="10" min="1" max="100">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div class="form-group mt-3">
+        <label for="cell-point" class="swal2-checkbox-label">
+            Cell Point
+            <input type="number" value="1" min="1" id="cell-point" class="swal2-checkbox">
+        </label>
+      </div>
+      <div class="form-group mt-3">
+        <label for="Mine Point" class="swal2-checkbox-label">
+          Mine Point
+          <input type="number" id="mine-point" value="-50" class="swal2-checkbox">
+        </label>
+      </div>
+      <div class="form-group mt-3">
+        <label for="count-cold-open" class="swal2-checkbox-label">
+          <input type="checkbox" id="count-cold-open" class="swal2-checkbox">
+          Count Cold Open
+        </label>
+      </div>
+`,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Save Settings',
+    cancelButtonText: 'Cancel',
+    customClass: {
+      container: 'game-settings-modal',
+      input: 'game-settings-input'
+    },
+      preConfirm: () => {
+        const difficulty = document.getElementById('difficulty')?.value;
+        const countColdOpen = document.getElementById('count-cold-open')?.checked;
+        const cellScore = document.getElementById('cell-point')?.value;
+        const minesScore = document.getElementById('mine-point')?.value;
+
+        // TODO: basic validation
+
+        return { 
+          difficulty,
+          count_cold_open: countColdOpen,
+          cell_score: parseInt(cellScore),
+          mine_score: parseInt(minesScore),
+        };
+      }
+    }).then(result => {
+        if (!result.isConfirmed) return;
+        socket.send(
+          JSON.stringify({
+            event_type: SocketEvents.CHANGE_SETTINGS,
+            settings: result.value,
+          })
+        );
+      })
+  }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.shiftKey && e.key === " " || e.key === "z") {
@@ -231,6 +305,7 @@ const Room = () => {
             icon: "warning",
             title: "Failed to start game",
             text: data.detail,
+            timer: 2000,
           });
         }
         break;
@@ -252,6 +327,7 @@ const Room = () => {
           icon: "error",
           title: "You lose!",
           text: "You opened a mine",
+          timer: 5000,
         });
         break;
       case SocketEvents.GAME_CLEARED:
@@ -271,6 +347,7 @@ const Room = () => {
           icon: "info",
           title: "You win!",
           text: "Game cleared",
+          timer: 2000,
         });
         break;
       case SocketEvents.POSITION_UPDATED:
@@ -297,6 +374,7 @@ const Room = () => {
         Swal.fire({
           icon: "info",
           text: data.message,
+          timer: 1500,
         });
         const notifLog: Chat = {
           sender: "System",
@@ -403,6 +481,7 @@ const Room = () => {
                 icon: "success",
                 title: "Link copied",
                 text: window.location.href,
+                timer: 1500,
               })
             }
           >
@@ -415,7 +494,7 @@ const Room = () => {
           </CopyToClipboard>
           <div
             id="settings-button"
-            onClick={() => {}}
+            onClick={() => onClickSettings()}
             className="cell bg-gray-300 dark:bg-gray-800 p-2 m-1 rounded-md hover:bg-gray-500"
           >
             <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
