@@ -146,26 +146,26 @@ const Home = () => {
   return (
     <>
       <div className="flex flex-col place-items-center justify-center items-center h-screen">
-        <div className="text-bold mb-5">Mines Party</div>
+        <div className="text-bold mb-5 animate-bounce">Mines Party</div>
         <div className="container mx-auto flex flex-col place-items-center">
           <input
-            className="block"
+            className="block p-2 shadow-lg hover:shadow-cyan-500 transition-shadow duration-700 rounded"
             type="text"
-            placeholder="Your name"
+            placeholder="XxBigGamingGamerxX"
             value={name}
             onChange={(e) => onUpdateUsername(e.target.value)}
           />
-          <button className="block" onClick={onCreateRoom}>
+          <button className="block p-2 m-1 shadow-red-50" onClick={onCreateRoom}>
             Create room
           </button>
           <input
-            className="block mt-5"
+            className="block mt-5 p-2 shadow-lg hover:shadow-red-50"
             type="text"
             placeholder="Room ID"
             value={roomId}
             onChange={(e) => onUpdateRoomId(e.target.value)}
           />
-          <button className="block" onClick={onJoinRoom}>
+          <button className="block p-2 m-1" onClick={onJoinRoom}>
             Join room
           </button>
         </div>
